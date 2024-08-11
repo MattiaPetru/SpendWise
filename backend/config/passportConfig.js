@@ -22,7 +22,6 @@ passport.use(new GoogleStrategy({
         });
         await utente.save();
       }
-
       done(null, utente);
     } catch (error) {
       done(error, null);
