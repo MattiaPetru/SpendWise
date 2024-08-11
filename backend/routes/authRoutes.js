@@ -59,26 +59,33 @@ router.post('/register', async (req, res) => {
   }
 });
 router.post('/reset-password', async (req, res) => {
+  console.log('Richiesta di reset password ricevuta:', req.body);
   try {
     const { email, newPassword } = req.body;
+    console.log('Email ricevuta:', email);
+
     const utente = await Utente.findOne({ email });
+    console.log('Utente trovato:', utente ? 'Sì' : 'No');
 
     if (!utente) {
+      console.log('Utente non trovato');
       return res.status(404).json({ message: 'Utente non trovato' });
     }
 
     // Hashare la nuova password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(newPassword, salt);
+    console.log('Nuova password hashata');
 
     // Aggiornare la password dell'utente
     utente.password = hashedPassword;
     await utente.save();
+    console.log('Password utente aggiornata');
 
     res.status(200).json({ message: 'Password aggiornata con successo' });
   } catch (error) {
     console.error('Errore nel reset della password:', error);
-    res.status(500).json({ message: 'Si è verificato un errore durante il reset della password' });
+    res.status(500).json({ message: 'Si è verificato un errore durante il reset della password', error: error.message });
   }
 });
 
