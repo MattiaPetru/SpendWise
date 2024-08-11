@@ -68,7 +68,7 @@ router.get('/me', authMiddleware, (req, res) => {
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 router.get('/google/callback',
-  passport.authenticate('google', { failureRedirect: `${process.env.FRONTEND_URL}/login?error=auth_failed` }),
+  passport.authenticate('google', { failureRedirect: '/login?error=auth_failed' }),
   async (req, res) => {
     try {
       const token = await generateJWT({ id: req.user._id });

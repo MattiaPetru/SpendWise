@@ -3,7 +3,7 @@ import { Form, Button, Container, Row, Col, Card, Alert } from 'react-bootstrap'
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 
-const Login = () => {
+const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -23,7 +23,6 @@ const Login = () => {
     }
   }, [location]);
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -32,7 +31,7 @@ const Login = () => {
       if (result.success) {
         navigate('/dashboard');
       } else {
-        setError(result.error);
+        setError(result.error || 'Login fallito. Riprova.');
       }
     } catch (error) {
       setError('Si è verificato un errore durante il login. Riprova.');
@@ -40,7 +39,8 @@ const Login = () => {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/google`;
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+    window.location.href = `${apiUrl}/api/auth/google`;
   };
 
   const handleGoogleLoginSuccess = async (token) => {
@@ -68,7 +68,6 @@ const Login = () => {
         setError('Si è verificato un errore durante l\'accesso con Google. Riprova.');
     }
   };
-
 
   return (
     <Container>
@@ -123,4 +122,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LoginPage;
