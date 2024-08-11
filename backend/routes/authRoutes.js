@@ -10,27 +10,17 @@ const router = express.Router();
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
 
 router.post('/login', async (req, res) => {
-  console.log('Tentativo di login ricevuto:', req.body);
   try {
     const { email, password } = req.body;
     const utente = await Utente.findOne({ email });
-    console.log('Utente trovato:', utente ? 'Sì' : 'No');
-
     if (!utente) {
-      console.log('Utente non trovato');
       return res.status(401).json({ message: 'Credenziali non valide' });
     }
-
     const isMatch = await bcrypt.compare(password, utente.password);
-    console.log('Password corrisponde:', isMatch ? 'Sì' : 'No');
-
     if (!isMatch) {
-      console.log('Password non corrisponde');
       return res.status(401).json({ message: 'Credenziali non valide' });
     }
-
     const token = generateJWT({ id: utente._id });
-    console.log('Token generato con successo');
     res.json({ token, message: "Login effettuato con successo" });
   } catch (error) {
     console.error('Errore nel login:', error);
@@ -112,8 +102,6 @@ router.post('/forgot-password', async (req, res) => {
 
     await utente.save();
 
-    // Qui dovresti inviare un'email con il link per il reset della password
-    // Per ora, restituiamo solo il token come risposta
     res.json({ message: 'Istruzioni per il reset della password inviate', resetToken });
   } catch (error) {
     console.error('Errore nella richiesta di reset password:', error);
@@ -132,13 +120,11 @@ router.get('/google', passport.authenticate('google', { scope: ['profile', 'emai
 router.get('/google/callback',
   passport.authenticate('google', { failureRedirect: '/login' }),
   async (req, res) => {
-    console.log('Callback Google ricevuto');
     try {
       const token = generateJWT({ id: req.user._id });
-      console.log('Token generato per login Google');
       res.redirect(`${process.env.FRONTEND_URL}/login?token=${token}`);
     } catch (error) {
-      console.error('Errore nella generazione del token per Google:', error);
+      console.error('Errore nella generazione del token:', error);
       res.redirect(`${process.env.FRONTEND_URL}/login?error=auth_failed`);
     }
   }

@@ -28,9 +28,7 @@ const utenteSchema = new mongoose.Schema({
     required: function () { return !this.googleId; }
   },
   googleId: {
-    type: String,
-    resetPasswordToken: String,
-    resetPasswordExpires: Date
+    type: String
   },
 }, {
   timestamps: true,

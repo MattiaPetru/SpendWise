@@ -100,9 +100,6 @@ const LoginPage = () => {
                   Login
                 </Button>
               </Form>
-              <div className="w-100 text-center mt-3">
-                <Link to="/forgot-password">Password dimenticata?</Link>
-              </div>
               <hr />
               <Button 
                 variant="danger" 
@@ -121,5 +118,7 @@ const LoginPage = () => {
     </Container>
   );
 };
+
+export default LoginPage;
 
 export default LoginPage;
