@@ -42,7 +42,12 @@ utenteSchema.methods.comparePassword = function (candidatePassword) {
 // Metodo pre-save per hashare la password
 utenteSchema.pre('save', async function (next) {
   if (this.isModified('password')) {
-    this.password = await bcrypt.hash(this.password, 10);
+    try {
+      const salt = await bcrypt.genSalt(10);
+      this.password = await bcrypt.hash(this.password, salt);
+    } catch (error) {
+      return next(error);
+    }
   }
   next();
 });
