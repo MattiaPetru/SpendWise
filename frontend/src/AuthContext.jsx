@@ -30,24 +30,32 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const login = async (email, password) => {
+  const login = async (email, password, token = null) => {
     try {
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
-      const response = await fetch(`${apiUrl}/api/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
+      
+      if (token) {
+        // Login con Google
+        await fetchUtente(token);
+        return { success: true };
+      } else {
+        // Login normale
+        const response = await fetch(`${apiUrl}/api/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        });
   
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Login fallito');
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Login fallito');
+        }
+  
+        const data = await response.json();
+        localStorage.setItem('token', data.token);
+        await fetchUtente(data.token);
+        return { success: true };
       }
-  
-      const data = await response.json();
-      localStorage.setItem('token', data.token);
-      await fetchUtente(data.token);
-      return { success: true };
     } catch (error) {
       console.error('Errore nel login:', error);
       return { success: false, error: error.message };
