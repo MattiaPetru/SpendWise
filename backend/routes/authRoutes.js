@@ -20,9 +20,7 @@ router.post('/login', async (req, res) => {
     if (!isMatch) {
       return res.status(401).json({ message: 'Credenziali non valide' });
     }
-    const payload = { id: utente._id };
-    console.log('Payload per il token:', payload);
-    const token = await generateJWT(payload);
+    const token = generateJWT({ id: utente._id });
     res.json({ token, message: "Login effettuato con successo" });
   } catch (error) {
     console.error('Errore nel login:', error);
@@ -59,43 +57,23 @@ router.post('/register', async (req, res) => {
     res.status(500).json({ message: 'Errore del server', error: error.message });
   }
 });
+// Rotta per il reset della password
 router.post('/reset-password', async (req, res) => {
-  console.log('1. Richiesta di reset password ricevuta');
   try {
-    console.log('2. Corpo della richiesta:', req.body);
     const { email, newPassword } = req.body;
-
-    if (!email || !newPassword) {
-      console.log('3. Email o password mancanti');
-      return res.status(400).json({ message: 'Email e nuova password sono richieste' });
-    }
-
-    console.log('4. Cercando utente con email:', email);
     const utente = await Utente.findOne({ email });
 
     if (!utente) {
-      console.log('5. Utente non trovato');
       return res.status(404).json({ message: 'Utente non trovato' });
     }
 
-    console.log('6. Utente trovato, generazione salt');
-    const salt = await bcrypt.genSalt(10);
-    console.log('7. Salt generato, hashing password');
-    const hashedPassword = await bcrypt.hash(newPassword, salt);
-
-    console.log('8. Password hashata, aggiornamento utente');
-    utente.password = hashedPassword;
+    utente.password = newPassword;
     await utente.save();
 
-    console.log('9. Utente aggiornato con successo');
     res.status(200).json({ message: 'Password aggiornata con successo' });
   } catch (error) {
-    console.error('10. Errore durante il reset della password:', error);
-    res.status(500).json({
-      message: 'Si è verificato un errore durante il reset della password',
-      error: error.message,
-      stack: error.stack
-    });
+    console.error('Errore nel reset della password:', error);
+    res.status(500).json({ message: 'Si è verificato un errore durante il reset della password' });
   }
 });
 

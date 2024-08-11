@@ -1,27 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Form, Button, Container, Row, Col, Card, Alert } from 'react-bootstrap';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { login } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
-
-  useEffect(() => {
-    const urlParams = new URLSearchParams(location.search);
-    const token = urlParams.get('token');
-    const errorParam = urlParams.get('error');
-
-    if (token) {
-      handleGoogleLoginSuccess(token);
-    } else if (errorParam) {
-      handleGoogleLoginError(errorParam);
-    }
-  }, [location]);
+  const { login } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -34,38 +21,8 @@ const LoginPage = () => {
         setError(result.error || 'Login fallito. Riprova.');
       }
     } catch (error) {
+      console.error('Errore nel login:', error);
       setError('Si è verificato un errore durante il login. Riprova.');
-    }
-  };
-
-  const handleGoogleLogin = () => {
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
-    window.location.href = `${apiUrl}/api/auth/google`;
-  };
-
-  const handleGoogleLoginSuccess = async (token) => {
-    try {
-      const result = await login(null, null, token);
-      if (result.success) {
-        navigate('/dashboard');
-      } else {
-        setError(result.error || 'Errore durante l\'accesso con Google');
-      }
-    } catch (error) {
-      setError('Si è verificato un errore durante l\'accesso con Google. Riprova.');
-    }
-  };
-
-  const handleGoogleLoginError = (errorParam) => {
-    switch (errorParam) {
-      case 'auth_failed':
-        setError('Autenticazione Google fallita. Riprova.');
-        break;
-      case 'token_generation_failed':
-        setError('Errore nella generazione del token. Riprova.');
-        break;
-      default:
-        setError('Si è verificato un errore durante l\'accesso con Google. Riprova.');
     }
   };
 
@@ -78,7 +35,7 @@ const LoginPage = () => {
               <h2 className="text-center mb-4">Login</h2>
               {error && <Alert variant="danger">{error}</Alert>}
               <Form onSubmit={handleSubmit}>
-                <Form.Group id="email" className="mb-3">
+                <Form.Group id="email">
                   <Form.Label>Email</Form.Label>
                   <Form.Control
                     type="email"
@@ -87,7 +44,7 @@ const LoginPage = () => {
                     required
                   />
                 </Form.Group>
-                <Form.Group id="password" className="mb-3">
+                <Form.Group id="password">
                   <Form.Label>Password</Form.Label>
                   <Form.Control
                     type="password"
@@ -96,26 +53,12 @@ const LoginPage = () => {
                     required
                   />
                 </Form.Group>
-                <Button className="w-100" type="submit">
+                <Button className="w-100 mt-3" type="submit">
                   Login
                 </Button>
               </Form>
-              <div className="w-100 text-center mt-3">
-                <Link to="/forgot-password">Password dimenticata?</Link>
-              </div>
-              <hr />
-              <Button 
-                variant="danger" 
-                className="w-100" 
-                onClick={handleGoogleLogin}
-              >
-                Accedi con Google
-              </Button>
             </Card.Body>
           </Card>
-          <div className="w-100 text-center mt-2">
-            Non hai un account? <Link to="/register">Registrati</Link>
-          </div>
         </Col>
       </Row>
     </Container>

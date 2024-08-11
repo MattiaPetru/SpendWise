@@ -51,6 +51,13 @@ utenteSchema.pre('save', async function (next) {
   }
   next();
 });
+utenteSchema.methods.comparePassword = async function (candidatePassword) {
+  try {
+    return await bcrypt.compare(candidatePassword, this.password);
+  } catch (error) {
+    throw error;
+  }
+};
 
 utenteSchema.index({ email: 1 }, { unique: true });
 

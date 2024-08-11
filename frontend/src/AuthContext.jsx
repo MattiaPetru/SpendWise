@@ -35,36 +35,29 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const login = async (email, password, token = null) => {
+  nst login = async (email, password) => {
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
-      
-      if (token) {
-        // Login con Google
-        localStorage.setItem('token', token);
-        await fetchUtente(token);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+        credentials: 'include'
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        localStorage.setItem('token', data.token);
+        setUtente(data.utente);
         return { success: true };
       } else {
-        // Login tradizionale
-        const response = await fetch(`${apiUrl}/api/auth/login`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password }),
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || 'Login fallito');
-        }
-
-        const data = await response.json();
-        localStorage.setItem('token', data.token);
-        await fetchUtente(data.token);
-        return { success: true };
+        return { success: false, error: data.message };
       }
     } catch (error) {
-      console.error('Errore nel login:', error);
-      return { success: false, error: error.message };
+      console.error('Errore durante il login:', error);
+      return { success: false, error: 'Errore di rete' };
     }
   };
 
