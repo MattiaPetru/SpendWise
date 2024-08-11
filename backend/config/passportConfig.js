@@ -34,10 +34,13 @@ passport.serializeUser((utente, done) => {
   done(null, utente.id);
 });
 
-passport.deserializeUser((id, done) => {
-  Utente.findById(id, (err, utente) => {
-    done(err, utente);
-  });
+passport.deserializeUser(async (id, done) => {
+  try {
+    const utente = await Utente.findById(id);
+    done(null, utente);
+  } catch (error) {
+    done(error, null);
+  }
 });
 
 export default passport;
