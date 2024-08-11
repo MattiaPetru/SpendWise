@@ -26,8 +26,8 @@ const corsOptions = {
   origin: function (origin, callback) {
     const whiteList = [
       "http://localhost:5173",
-      //"https://spendwise.vercel.app",
-      //"https://spendwise.onrender.com"
+      "https://spend-wise-two.vercel.app",
+      "https://spendwise-uf65.onrender.com"
     ]
 
     if (process.env.NODE_ENV === "development") {
