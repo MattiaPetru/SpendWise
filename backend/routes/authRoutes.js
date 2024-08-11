@@ -12,15 +12,22 @@ const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log('Tentativo di login per:', email);
+
     const utente = await Utente.findOne({ email });
     if (!utente) {
+      console.log('Utente non trovato');
       return res.status(401).json({ message: 'Credenziali non valide' });
     }
+
     const isMatch = await bcrypt.compare(password, utente.password);
     if (!isMatch) {
+      console.log('Password non corrispondente');
       return res.status(401).json({ message: 'Credenziali non valide' });
     }
+
     const token = await generateJWT({ id: utente._id });
+    console.log('Login effettuato con successo per:', email);
     res.json({ token, message: "Login effettuato con successo" });
   } catch (error) {
     console.error('Errore nel login:', error);
