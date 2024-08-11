@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Button, Alert } from 'react-bootstrap';
+import { Form, Button, Container, Row, Col, Card, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 
@@ -15,63 +15,73 @@ const RegisterPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    const result = await register(nome, cognome, email, password);
-    if (result.success) {
-      navigate('/login');
-    } else {
-      if (result.error === 'Email già registrata') {
-        setError('Questa email è già stata registrata. Prova ad accedere o usa un altra email.');
+    try {
+      const result = await register(nome, cognome, email, password);
+      if (result.success) {
+        navigate('/login');
       } else {
         setError(result.error || 'Registrazione fallita. Riprova.');
       }
+    } catch (error) {
+      console.error('Errore durante la registrazione:', error);
+      setError('Si è verificato un errore durante la registrazione. Riprova.');
     }
   };
 
-
   return (
-    <Form onSubmit={handleSubmit}>
-      <h2>Registrazione</h2>
-      {error && <Alert variant="danger">{error}</Alert>}
-      <Form.Group>
-        <Form.Label>Nome</Form.Label>
-        <Form.Control
-          type="text"
-          value={nome}
-          onChange={(e) => setNome(e.target.value)}
-          required
-        />
-      </Form.Group>
-      <Form.Group>
-        <Form.Label>Cognome</Form.Label>
-        <Form.Control
-          type="text"
-          value={cognome}
-          onChange={(e) => setCognome(e.target.value)}
-          required
-        />
-      </Form.Group>
-      <Form.Group>
-        <Form.Label>Email</Form.Label>
-        <Form.Control
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-      </Form.Group>
-      <Form.Group>
-        <Form.Label>Password</Form.Label>
-        <Form.Control
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-      </Form.Group>
-      <Button variant="primary" type="submit">
-        Registrati
-      </Button>
-    </Form>
+    <Container>
+      <Row className="justify-content-md-center mt-5">
+        <Col xs={12} md={6}>
+          <Card>
+            <Card.Body>
+              <h2 className="text-center mb-4">Registrazione</h2>
+              {error && <Alert variant="danger">{error}</Alert>}
+              <Form onSubmit={handleSubmit}>
+                <Form.Group id="nome" className="mb-3">
+                  <Form.Label>Nome</Form.Label>
+                  <Form.Control
+                    type="text"
+                    value={nome}
+                    onChange={(e) => setNome(e.target.value)}
+                    required
+                  />
+                </Form.Group>
+                <Form.Group id="cognome" className="mb-3">
+                  <Form.Label>Cognome</Form.Label>
+                  <Form.Control
+                    type="text"
+                    value={cognome}
+                    onChange={(e) => setCognome(e.target.value)}
+                    required
+                  />
+                </Form.Group>
+                <Form.Group id="email" className="mb-3">
+                  <Form.Label>Email</Form.Label>
+                  <Form.Control
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                </Form.Group>
+                <Form.Group id="password" className="mb-3">
+                  <Form.Label>Password</Form.Label>
+                  <Form.Control
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                </Form.Group>
+                <Button className="w-100" type="submit">
+                  Registrati
+                </Button>
+              </Form>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+    </Container>
   );
 };
 

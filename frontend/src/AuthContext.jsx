@@ -65,6 +65,26 @@ export const AuthProvider = ({ children }) => {
       return { success: false, error: error.message };
     }
   };
+  const register = async (nome, cognome, email, password) => {
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+      const response = await fetch(`${apiUrl}/api/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome, cognome, email, password }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Registrazione fallita');
+      }
+
+      return { success: true };
+    } catch (error) {
+      console.error('Errore nella registrazione:', error);
+      return { success: false, error: error.message };
+    }
+  };
 
   const logout = () => {
     localStorage.removeItem('token');
@@ -72,9 +92,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ utente, login, logout, fetchUtente }}>
-      {children}
-    </AuthContext.Provider>
+      <AuthContext.Provider value={{ utente, login, logout, register, fetchUtente }}>
+        {children}
+      </AuthContext.Provider>
   );
 };
 
