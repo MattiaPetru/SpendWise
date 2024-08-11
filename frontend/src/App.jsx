@@ -5,6 +5,7 @@ import NavbarComponent from './components/NavbarComponent';
 import HomePage from './components/HomePage';
 import LoginPage from './components/LoginPage';
 import RegisterPage from './components/RegisterPage';
+import ForgotPasswordPage from './components/ForgotPasswordPage';
 import DashboardLayout from './components/DashboardLayout';
 import DashboardHome from './components/DashboardHome'; 
 import AddExpense from './components/AddExpense';
@@ -23,6 +24,7 @@ const App = () => {
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/dashboard/*" element={
             <PrivateRoute>
               <DashboardLayout>

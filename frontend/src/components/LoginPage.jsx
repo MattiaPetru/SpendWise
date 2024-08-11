@@ -114,7 +114,7 @@ const LoginPage = () => {
             </Card.Body>
           </Card>
           <div className="w-100 text-center mt-2">
-            Non hai un account? <Link to="/signup">Registrati</Link>
+            Non hai un account? <Link to="/register">Registrati</Link>
           </div>
         </Col>
       </Row>
