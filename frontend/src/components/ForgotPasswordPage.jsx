@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Form, Button, Container, Row, Col, Card, Alert } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const ForgotPasswordPage = () => {
   const [email, setEmail] = useState('');
+  const [newPassword, setNewPassword] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -13,23 +15,25 @@ const ForgotPasswordPage = () => {
     setError('');
     try {
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
-      const response = await fetch(`${apiUrl}/api/auth/forgot-password`, {
+      const response = await fetch(`${apiUrl}/api/auth/reset-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, newPassword }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        setMessage('Se l\'email è associata a un account, riceverai istruzioni per reimpostare la password.');
+        setMessage('Password reimpostata con successo. Verrai reindirizzato alla pagina di login.');
+        setTimeout(() => navigate('/login'), 3000);
       } else {
         setError(data.message || 'Si è verificato un errore. Riprova più tardi.');
       }
     } catch (error) {
-      setError('Si è verificato un errore. Riprova più tardi.');
+      console.error('Errore nella richiesta di reset password:', error);
+      setError('Si è verificato un errore di rete. Riprova più tardi.');
     }
   };
 
@@ -49,6 +53,15 @@ const ForgotPasswordPage = () => {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                </Form.Group>
+                <Form.Group id="new-password" className="mb-3">
+                  <Form.Label>Nuova Password</Form.Label>
+                  <Form.Control
+                    type="password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
                     required
                   />
                 </Form.Group>
