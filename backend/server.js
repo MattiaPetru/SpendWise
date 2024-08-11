@@ -28,17 +28,16 @@ const corsOptions = {
       "http://localhost:5173",
       "https://spend-wise-two.vercel.app",
       "https://spendwise-uf65.onrender.com"
-    ]
+    ];
 
-    if (process.env.NODE_ENV === "development") {
-      callback(null, true)
-    } else if (whiteList.indexOf(origin) !== -1 || !origin) {
-      callback(null, true)
+    if (process.env.NODE_ENV === "development" || !origin || whiteList.indexOf(origin) !== -1) {
+      callback(null, true);
     } else {
-      callback(new Error("Errore generico CORS - Cors(server backend)"))
+      callback(new Error("Non consentito da CORS"));
     }
   },
-  credentials: true
+  credentials: true,
+  optionsSuccessStatus: 200
 };
 
 app.use(cors(corsOptions));
@@ -49,6 +48,11 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+    cookie: {
+      secure: process.env.NODE_ENV === "production", // usa HTTPS in produzione
+      httpOnly: true,
+      sameSite: process.env.NODE_ENV === "production" ? 'none' : 'lax' // necessario per i cookie cross-site in produzione
+    }
   })
 );
 

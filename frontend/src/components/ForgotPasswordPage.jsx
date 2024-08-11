@@ -21,6 +21,7 @@ const ForgotPasswordPage = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email, newPassword }),
+         credentials: 'include'
       });
 
       const data = await response.json();
