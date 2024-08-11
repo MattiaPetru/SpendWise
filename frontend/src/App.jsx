@@ -27,16 +27,17 @@ const App = () => {
             <PrivateRoute>
               <DashboardLayout>
                 <Routes>
-                  <Route index element={<DashboardHome />} /> {/* Modificato qui */}
+                  <Route index element={<DashboardHome />} />
                   <Route path="add-expense" element={<AddExpense />} />
                   <Route path="expenses" element={<ViewExpenses />} />
                   <Route path="analytics" element={<Analytics />} />
-                  <Route path="/budget" element={<BudgetManagement />} />
-                  <Route path="/advice" element={<PersonalizedAdvice />} />
+                  <Route path="budget" element={<BudgetManagement />} />
+                  <Route path="advice" element={<PersonalizedAdvice />} />
                 </Routes>
               </DashboardLayout>
             </PrivateRoute>
           } />
+          <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </Router>
     </AuthProvider>
@@ -49,5 +50,3 @@ const PrivateRoute = ({ children }) => {
 };
 
 export default App;
-
-
