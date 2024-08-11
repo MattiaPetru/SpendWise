@@ -28,7 +28,9 @@ const utenteSchema = new mongoose.Schema({
     required: function () { return !this.googleId; }
   },
   googleId: {
-    type: String
+    type: String,
+    resetPasswordToken: String,
+    resetPasswordExpires: Date
   },
 }, {
   timestamps: true,
@@ -51,6 +53,7 @@ utenteSchema.pre('save', async function (next) {
   }
   next();
 });
+
 utenteSchema.methods.comparePassword = async function (candidatePassword) {
   try {
     return await bcrypt.compare(candidatePassword, this.password);

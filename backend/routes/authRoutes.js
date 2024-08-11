@@ -57,6 +57,7 @@ router.post('/register', async (req, res) => {
     res.status(500).json({ message: 'Errore del server', error: error.message });
   }
 });
+
 // Rotta per il reset della password
 router.post('/reset-password', async (req, res) => {
   try {
@@ -67,13 +68,45 @@ router.post('/reset-password', async (req, res) => {
       return res.status(404).json({ message: 'Utente non trovato' });
     }
 
-    utente.password = newPassword;
+    // Hashare la nuova password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    utente.password = hashedPassword;
+    utente.resetPasswordToken = undefined;
+    utente.resetPasswordExpires = undefined;
+
     await utente.save();
 
     res.status(200).json({ message: 'Password aggiornata con successo' });
   } catch (error) {
     console.error('Errore nel reset della password:', error);
     res.status(500).json({ message: 'Si è verificato un errore durante il reset della password' });
+  }
+});
+
+
+router.post('/forgot-password', async (req, res) => {
+  try {
+    const { email } = req.body;
+    const utente = await Utente.findOne({ email });
+
+    if (!utente) {
+      return res.status(404).json({ message: 'Utente non trovato' });
+    }
+
+    const resetToken = crypto.randomBytes(20).toString('hex');
+    utente.resetPasswordToken = resetToken;
+    utente.resetPasswordExpires = Date.now() + 3600000; // 1 ora
+
+    await utente.save();
+
+    // Qui dovresti inviare un'email con il link per il reset della password
+    // Per ora, restituiamo solo il token come risposta
+    res.json({ message: 'Istruzioni per il reset della password inviate', resetToken });
+  } catch (error) {
+    console.error('Errore nella richiesta di reset password:', error);
+    res.status(500).json({ message: 'Si è verificato un errore durante la richiesta di reset password' });
   }
 });
 
@@ -86,14 +119,14 @@ router.get('/me', authMiddleware, (req, res) => {
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 router.get('/google/callback',
-  passport.authenticate('google', { failureRedirect: '/login?error=auth_failed' }),
+  passport.authenticate('google', { failureRedirect: '/login' }),
   async (req, res) => {
     try {
       const token = await generateJWT({ id: req.user._id });
       res.redirect(`${process.env.FRONTEND_URL}/login?token=${token}`);
     } catch (error) {
       console.error('Errore nella generazione del token:', error);
-      res.redirect(`${process.env.FRONTEND_URL}/login?error=token_generation_failed`);
+      res.redirect(`${process.env.FRONTEND_URL}/login?error=auth_failed`);
     }
   }
 );

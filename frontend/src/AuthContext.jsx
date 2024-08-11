@@ -4,14 +4,11 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [utente, setUtente] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
       fetchUtente(token);
-    } else {
-      setLoading(false);
     }
   }, []);
 
@@ -25,60 +22,34 @@ export const AuthProvider = ({ children }) => {
         const utenteData = await response.json();
         setUtente({ ...utenteData, token });
       } else {
-        throw new Error('Sessione non valida');
+        localStorage.removeItem('token');
       }
     } catch (error) {
       console.error('Errore nel recupero dei dati utente:', error);
       localStorage.removeItem('token');
-    } finally {
-      setLoading(false);
     }
   };
 
   const login = async (email, password) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-        credentials: 'include'
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        localStorage.setItem('token', data.token);
-        setUtente(data.utente);
-        return { success: true };
-      } else {
-        return { success: false, error: data.message };
-      }
-    } catch (error) {
-      console.error('Errore durante il login:', error);
-      return { success: false, error: 'Errore di rete' };
-    }
-  };
-
-  const register = async (nome, cognome, email, password) => {
-    try {
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
-      const response = await fetch(`${apiUrl}/api/auth/register`, {
+      const response = await fetch(`${apiUrl}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nome, cognome, email, password }),
+        body: JSON.stringify({ email, password }),
       });
-
-      const data = await response.json();
-
+  
       if (!response.ok) {
-        throw new Error(data.message || 'Errore durante la registrazione');
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Login fallito');
       }
-
+  
+      const data = await response.json();
+      localStorage.setItem('token', data.token);
+      await fetchUtente(data.token);
       return { success: true };
     } catch (error) {
-      console.error('Errore nella registrazione:', error);
+      console.error('Errore nel login:', error);
       return { success: false, error: error.message };
     }
   };
@@ -89,7 +60,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ utente, login, logout, register, loading }}>
+    <AuthContext.Provider value={{ utente, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
