@@ -14,8 +14,12 @@ const Login = () => {
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const token = urlParams.get('token');
+    const errorParam = urlParams.get('error');
+
     if (token) {
       handleGoogleLoginSuccess(token);
+    } else if (errorParam) {
+      handleGoogleLoginError(errorParam);
     }
   }, [location]);
 
@@ -50,6 +54,20 @@ const Login = () => {
       setError('Si è verificato un errore durante l\'accesso con Google. Riprova.');
     }
   };
+
+  const handleGoogleLoginError = (errorParam) => {
+    switch (errorParam) {
+      case 'auth_failed':
+        setError('Autenticazione Google fallita. Riprova.');
+        break;
+      case 'token_generation_failed':
+        setError('Errore nella generazione del token. Riprova.');
+        break;
+      default:
+        setError('Si è verificato un errore durante l\'accesso con Google. Riprova.');
+    }
+  };
+
 
   return (
     <Container>

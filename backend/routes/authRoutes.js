@@ -68,18 +68,16 @@ router.get('/me', authMiddleware, (req, res) => {
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 router.get('/google/callback',
-  passport.authenticate('google', { failureRedirect: `${FRONTEND_URL}/login` }),
-  handleAuthCallback
-);
-
-async function handleAuthCallback(req, res) {
-  try {
-    const token = await generateJWT({ id: req.utente._id });
-    res.redirect(`${FRONTEND_URL}/login?token=${token}`);
-  } catch (error) {
-    console.error('Errore nella generazione del token:', error)
-    res.redirect(`${FRONTEND_URL}/login?error=auth_failed`);
+  passport.authenticate('google', { failureRedirect: `${process.env.FRONTEND_URL}/login?error=auth_failed` }),
+  (req, res) => {
+    try {
+      const token = generateJWT({ id: req.user._id });
+      res.redirect(`${process.env.FRONTEND_URL}/login?token=${token}`);
+    } catch (error) {
+      console.error('Errore nella generazione del token:', error);
+      res.redirect(`${process.env.FRONTEND_URL}/login?error=token_generation_failed`);
+    }
   }
-}
+);
 
 export default router;
