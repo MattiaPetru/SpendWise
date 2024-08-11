@@ -52,6 +52,7 @@ const LoginPage = () => {
         setError(result.error || 'Errore durante l\'accesso con Google');
       }
     } catch (error) {
+      console.error('Errore durante l\'accesso con Google:', error);
       setError('Si è verificato un errore durante l\'accesso con Google. Riprova.');
     }
   };

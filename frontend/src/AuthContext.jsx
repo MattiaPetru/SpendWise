@@ -22,11 +22,14 @@ export const AuthProvider = ({ children }) => {
         const utenteData = await response.json();
         setUtente({ ...utenteData, token });
       } else {
+        console.error('Errore nel recupero dati utente:', await response.text());
         localStorage.removeItem('token');
+        setUtente(null);
       }
     } catch (error) {
       console.error('Errore nel recupero dei dati utente:', error);
       localStorage.removeItem('token');
+      setUtente(null);
     }
   };
 
@@ -36,6 +39,7 @@ export const AuthProvider = ({ children }) => {
       
       if (token) {
         // Login con Google
+        localStorage.setItem('token', token);
         await fetchUtente(token);
         return { success: true };
       } else {
@@ -68,7 +72,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ utente, login, logout }}>
+    <AuthContext.Provider value={{ utente, login, logout, fetchUtente }}>
       {children}
     </AuthContext.Provider>
   );

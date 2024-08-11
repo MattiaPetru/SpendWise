@@ -20,7 +20,7 @@ router.post('/login', async (req, res) => {
     if (!isMatch) {
       return res.status(401).json({ message: 'Credenziali non valide' });
     }
-    const token = generateJWT({ id: utente._id });
+    const token = await generateJWT({ id: utente._id });
     res.json({ token, message: "Login effettuato con successo" });
   } catch (error) {
     console.error('Errore nel login:', error);
@@ -121,7 +121,7 @@ router.get('/google/callback',
   passport.authenticate('google', { failureRedirect: '/login' }),
   async (req, res) => {
     try {
-      const token = generateJWT({ id: req.user._id });
+      const token = await generateJWT({ id: req.user._id });
       res.redirect(`${process.env.FRONTEND_URL}/login?token=${token}`);
     } catch (error) {
       console.error('Errore nella generazione del token:', error);
