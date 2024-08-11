@@ -4,11 +4,14 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [utente, setUtente] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
       fetchUtente(token);
+    } else {
+      setLoading(false);
     }
   }, []);
 
@@ -22,31 +25,43 @@ export const AuthProvider = ({ children }) => {
         const utenteData = await response.json();
         setUtente({ ...utenteData, token });
       } else {
-        localStorage.removeItem('token');
+        throw new Error('Sessione non valida');
       }
     } catch (error) {
       console.error('Errore nel recupero dei dati utente:', error);
       localStorage.removeItem('token');
+    } finally {
+      setLoading(false);
     }
   };
 
-  const login = async (email, password) => {
+  const login = async (email, password, token = null) => {
     try {
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
-      const response = await fetch(`${apiUrl}/api/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-  
-      if (!response.ok) {
-        throw new Error('Login fallito');
+      
+      if (token) {
+        // Login con Google
+        localStorage.setItem('token', token);
+        await fetchUtente(token);
+        return { success: true };
+      } else {
+        // Login tradizionale
+        const response = await fetch(`${apiUrl}/api/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Login fallito');
+        }
+
+        const data = await response.json();
+        localStorage.setItem('token', data.token);
+        await fetchUtente(data.token);
+        return { success: true };
       }
-  
-      const data = await response.json();
-      localStorage.setItem('token', data.token);
-      await fetchUtente(data.token);
-      return { success: true };
     } catch (error) {
       console.error('Errore nel login:', error);
       return { success: false, error: error.message };
@@ -61,13 +76,13 @@ export const AuthProvider = ({ children }) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ nome, cognome, email, password }),
       });
-  
+
       const data = await response.json();
-  
+
       if (!response.ok) {
         throw new Error(data.message || 'Errore durante la registrazione');
       }
-  
+
       return { success: true };
     } catch (error) {
       console.error('Errore nella registrazione:', error);
@@ -81,7 +96,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ utente, login, logout, register }}>
+    <AuthContext.Provider value={{ utente, login, logout, register, loading }}>
       {children}
     </AuthContext.Provider>
   );

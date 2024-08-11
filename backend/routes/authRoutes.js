@@ -69,9 +69,9 @@ router.get('/google', passport.authenticate('google', { scope: ['profile', 'emai
 
 router.get('/google/callback',
   passport.authenticate('google', { failureRedirect: `${process.env.FRONTEND_URL}/login?error=auth_failed` }),
-  (req, res) => {
+  async (req, res) => {
     try {
-      const token = generateJWT({ id: req.user._id });
+      const token = await generateJWT({ id: req.user._id });
       res.redirect(`${process.env.FRONTEND_URL}/login?token=${token}`);
     } catch (error) {
       console.error('Errore nella generazione del token:', error);
