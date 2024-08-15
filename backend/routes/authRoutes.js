@@ -131,7 +131,10 @@ router.get('/me', authMiddleware, (req, res) => {
   res.json(utenteData);
 });
 
-router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+router.get('/google', passport.authenticate('google', {
+  scope: ['profile', 'email'],
+  prompt: 'select_account' // Forza la selezione dell'account
+}));
 
 router.get('/google/callback',
   passport.authenticate('google', { failureRedirect: '/login' }),
