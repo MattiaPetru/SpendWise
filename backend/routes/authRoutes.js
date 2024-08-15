@@ -16,22 +16,25 @@ router.post('/login', async (req, res) => {
 
     const utente = await Utente.findOne({ email });
     if (!utente) {
-      console.log('Utente non trovato');
+      console.log('Utente non trovato:', email);
       return res.status(401).json({ message: 'Credenziali non valide' });
     }
+    console.log('Utente trovato:', utente.email);
 
-    const isMatch = await utente.comparePassword(password);
+    const isMatch = await bcrypt.compare(password, utente.password);
+    console.log('Password corrisponde:', isMatch);
+
     if (!isMatch) {
       console.log('Password non corrispondente per:', email);
       return res.status(401).json({ message: 'Credenziali non valide' });
     }
 
     const token = await generateJWT({ id: utente._id });
-    console.log('Login effettuato con successo per:', email);
+    console.log('Token generato con successo per:', email);
     res.json({ token, message: "Login effettuato con successo" });
   } catch (error) {
     console.error('Errore nel login:', error);
-    res.status(500).json({ message: 'Errore del server' });
+    res.status(500).json({ message: 'Errore del server durante il login' });
   }
 });
 

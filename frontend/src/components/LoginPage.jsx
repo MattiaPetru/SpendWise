@@ -26,14 +26,18 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    console.log('Tentativo di login per:', email);
     try {
       const result = await login(email, password);
       if (result.success) {
+        console.log('Login riuscito');
         navigate('/dashboard');
       } else {
+        console.error('Login fallito:', result.error);
         setError(result.error || 'Login fallito. Riprova.');
       }
     } catch (error) {
+      console.error('Errore durante il login:', error);
       setError('Si è verificato un errore durante il login. Riprova.');
     }
   };

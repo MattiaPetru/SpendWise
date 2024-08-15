@@ -45,7 +45,9 @@ utenteSchema.pre('save', async function (next) {
     try {
       const salt = await bcrypt.genSalt(10);
       this.password = await bcrypt.hash(this.password, salt);
+      console.log('Password hashata con successo');
     } catch (error) {
+      console.error('Errore durante l\'hashing della password:', error);
       return next(error);
     }
   }
@@ -54,8 +56,11 @@ utenteSchema.pre('save', async function (next) {
 
 utenteSchema.methods.comparePassword = async function (candidatePassword) {
   try {
-    return await bcrypt.compare(candidatePassword, this.password);
+    const isMatch = await bcrypt.compare(candidatePassword, this.password);
+    console.log('Confronto password:', isMatch);
+    return isMatch;
   } catch (error) {
+    console.error('Errore durante il confronto delle password:', error);
     throw error;
   }
 };
