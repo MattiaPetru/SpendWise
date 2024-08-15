@@ -4,6 +4,7 @@ import { Bar, Pie } from 'react-chartjs-2';
 import { Form, Card, Row, Col, Alert } from 'react-bootstrap';
 import { useAuth } from '../AuthContext';
 
+// Registriamo i componenti necessari di Chart.js
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -22,6 +23,7 @@ const Analytics = () => {
   const chartRef = useRef(null);
   const chartInstanceRef = useRef(null);
 
+  // Colori predefiniti per le categorie
   const categoryColors = useMemo(() => ({
     Alimentari: 'rgba(255, 99, 132, 0.6)',
     Trasporti: 'rgba(54, 162, 235, 0.6)',
@@ -33,12 +35,14 @@ const Analytics = () => {
     Altro: 'rgba(83, 102, 255, 0.6)',
   }), []);
 
+  // Effetto per caricare i dati quando il tipo di grafico o l'utente cambiano
   useEffect(() => {
     if (utente && utente.token) {
       fetchData();
     }
   }, [chartType, utente]);
 
+  // Effetto per pulire l'istanza del grafico quando il componente viene smontato
   useEffect(() => {
     return () => {
       if (chartInstanceRef.current) {
@@ -47,6 +51,7 @@ const Analytics = () => {
     };
   }, []);
 
+  // Funzione per recuperare i dati dal server
   const fetchData = async () => {
     try {
       setError('');
@@ -88,6 +93,7 @@ const Analytics = () => {
     }
   };
 
+  // Funzione per preparare i dati del grafico
   const prepareChartData = (data) => {
     if (chartType === 'categoria') {
       setChartData({
@@ -112,6 +118,7 @@ const Analytics = () => {
     }
   };
 
+  // Funzione per generare un colore casuale
   const getRandomColor = () => {
     const r = Math.floor(Math.random() * 255);
     const g = Math.floor(Math.random() * 255);
@@ -119,13 +126,24 @@ const Analytics = () => {
     return `rgba(${r}, ${g}, ${b}, 0.6)`;
   };
 
+  // Opzioni del grafico
   const options = {
     responsive: true,
     maintainAspectRatio: false,
-    indexAxis: 'y', // Questa è la modifica chiave per rendere il grafico verticale
     plugins: {
       legend: {
         position: 'top',
+        onClick: function(e, legendItem, legend) {
+          const index = legendItem.datasetIndex;
+          const ci = legend.chart;
+          if (ci.isDatasetVisible(index)) {
+            ci.hide(index);
+            legendItem.hidden = true;
+          } else {
+            ci.show(index);
+            legendItem.hidden = false;
+          }
+        }
       },
       title: {
         display: true,
@@ -140,6 +158,20 @@ const Analytics = () => {
       x: {
         title: {
           display: true,
+          text: getXAxisLabel(),
+          font: {
+            size: 14,
+            weight: 'bold',
+          },
+        },
+        ticks: {
+          maxRotation: 45,
+          minRotation: 45
+        }
+      },
+      y: {
+        title: {
+          display: true,
           text: 'Importo (€)',
           font: {
             size: 14,
@@ -151,21 +183,16 @@ const Analytics = () => {
             return new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' }).format(value);
           },
         },
-      },
-      y: {
-        title: {
-          display: true,
-          text: getYAxisLabel(),
-          font: {
-            size: 14,
-            weight: 'bold',
-          },
-        },
       }
-    } : {}
+    } : {},
+    hover: {
+      mode: 'index',
+      intersect: false
+    }
   };
 
-  function getYAxisLabel() {
+  // Funzione per ottenere l'etichetta dell'asse X
+  function getXAxisLabel() {
     switch(chartType) {
       case 'mensile':
         return 'Mese';
@@ -180,6 +207,7 @@ const Analytics = () => {
     }
   }
 
+  // Funzione per renderizzare il grafico
   const renderChart = () => {
     if (!chartData) return null;
 
