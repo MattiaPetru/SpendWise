@@ -122,6 +122,7 @@ const Analytics = () => {
   const options = {
     responsive: true,
     maintainAspectRatio: false,
+    indexAxis: 'y', // Questa è la modifica chiave per rendere il grafico verticale
     plugins: {
       legend: {
         position: 'top',
@@ -137,18 +138,6 @@ const Analytics = () => {
     },
     scales: chartType !== 'categoria' ? {
       x: {
-        stacked: true,
-        title: {
-          display: true,
-          text: getXAxisLabel(),
-          font: {
-            size: 14,
-            weight: 'bold',
-          },
-        },
-      },
-      y: {
-        stacked: true,
         title: {
           display: true,
           text: 'Importo (€)',
@@ -162,11 +151,21 @@ const Analytics = () => {
             return new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' }).format(value);
           },
         },
+      },
+      y: {
+        title: {
+          display: true,
+          text: getYAxisLabel(),
+          font: {
+            size: 14,
+            weight: 'bold',
+          },
+        },
       }
     } : {}
   };
 
-  function getXAxisLabel() {
+  function getYAxisLabel() {
     switch(chartType) {
       case 'mensile':
         return 'Mese';
