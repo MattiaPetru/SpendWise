@@ -42,18 +42,17 @@ router.post('/login', async (req, res) => {
 router.post('/register', async (req, res) => {
   try {
     const { nome, cognome, email, password } = req.body;
-
-    if (!email) {
-      return res.status(400).json({ message: 'Email è obbligatoria' });
-    }
+    console.log('Tentativo di registrazione per:', email);
 
     const existingUtente = await Utente.findOne({ email });
     if (existingUtente) {
+      console.log('Email già registrata:', email);
       return res.status(400).json({ message: 'Email già registrata' });
     }
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
+    console.log('Password hashata con successo');
 
     const newUtente = new Utente({
       nome,
@@ -63,18 +62,12 @@ router.post('/register', async (req, res) => {
     });
 
     await newUtente.save();
+    console.log('Nuovo utente registrato:', email);
 
     res.status(201).json({ message: "Registrazione effettuata con successo" });
   } catch (error) {
     console.error('Errore durante la registrazione:', error);
-    if (error.code === 11000) {
-      return res.status(400).json({ message: 'Email già registrata' });
-    }
-    if (error.name === 'ValidationError') {
-      const messages = Object.values(error.errors).map(err => err.message);
-      return res.status(400).json({ message: messages.join(', ') });
-    }
-    res.status(500).json({ message: 'Errore del server', error: error.message });
+    res.status(500).json({ message: 'Errore del server durante la registrazione' });
   }
 });
 

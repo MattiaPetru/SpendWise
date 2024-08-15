@@ -27,6 +27,7 @@ const LoginPage = () => {
     e.preventDefault();
     setError('');
     console.log('Tentativo di login per:', email);
+    console.log('Lunghezza password:', password.length);
     try {
       const result = await login(email, password);
       if (result.success) {
