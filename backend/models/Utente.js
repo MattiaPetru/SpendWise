@@ -35,9 +35,6 @@ const utenteSchema = new mongoose.Schema({
   collection: "utenti"
 });
 
-utenteSchema.methods.comparePassword = function (candidatePassword) {
-  return bcrypt.compare(candidatePassword, this.password);
-};
 
 // Metodo pre-save per hashare la password
 utenteSchema.pre('save', async function (next) {
@@ -56,11 +53,7 @@ utenteSchema.pre('save', async function (next) {
 
 utenteSchema.methods.comparePassword = async function (candidatePassword) {
   try {
-    console.log('Confronto password per utente:', this.email);
-    console.log('Password hashata nel database:', this.password);
-    console.log('Password candidata:', candidatePassword);
     const isMatch = await bcrypt.compare(candidatePassword, this.password);
-    console.log('Risultato confronto password:', isMatch);
     return isMatch;
   } catch (error) {
     console.error('Errore durante il confronto delle password:', error);

@@ -21,7 +21,7 @@ router.post('/login', async (req, res) => {
     }
     console.log('Utente trovato:', utente.email);
 
-    const isMatch = await bcrypt.compare(password, utente.password);
+    const isMatch = await utente.comparePassword(password);
     console.log('Password corrisponde:', isMatch);
 
     if (!isMatch) {
@@ -50,15 +50,11 @@ router.post('/register', async (req, res) => {
       return res.status(400).json({ message: 'Email già registrata' });
     }
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-    console.log('Password hashata con successo');
-
     const newUtente = new Utente({
       nome,
       cognome,
       email,
-      password: hashedPassword
+      password
     });
 
     await newUtente.save();
