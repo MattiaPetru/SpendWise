@@ -49,12 +49,12 @@ export const AuthProvider = ({ children }) => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password }),
         });
-        
+
         const data = await response.json();
   
         if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || 'Login fallito');
+          
+          throw new Error(data.message || 'Login fallito');
         }
   
       

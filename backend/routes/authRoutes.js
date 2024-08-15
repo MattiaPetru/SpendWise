@@ -20,9 +20,9 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ message: 'Credenziali non valide' });
     }
 
-    const isMatch = await bcrypt.compare(password, utente.password);
+    const isMatch = await utente.comparePassword(password);
     if (!isMatch) {
-      console.log('Password non corrispondente');
+      console.log('Password non corrispondente per:', email);
       return res.status(401).json({ message: 'Credenziali non valide' });
     }
 
