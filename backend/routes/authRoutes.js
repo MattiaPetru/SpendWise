@@ -13,6 +13,7 @@ router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
     console.log('Tentativo di login per:', email);
+    console.log('Password fornita:', password);
 
     const utente = await Utente.findOne({ email });
     if (!utente) {
@@ -20,6 +21,7 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ message: 'Credenziali non valide' });
     }
     console.log('Utente trovato:', utente.email);
+    console.log('Password hashata nel database:', utente.password);
 
     const isMatch = await utente.comparePassword(password);
     console.log('Password corrisponde:', isMatch);
@@ -43,6 +45,7 @@ router.post('/register', async (req, res) => {
   try {
     const { nome, cognome, email, password } = req.body;
     console.log('Tentativo di registrazione per:', email);
+    console.log('Password originale:', password);
 
     const existingUtente = await Utente.findOne({ email });
     if (existingUtente) {
@@ -57,7 +60,9 @@ router.post('/register', async (req, res) => {
       password
     });
 
+    console.log('Password prima del salvataggio:', newUtente.password);
     await newUtente.save();
+    console.log('Password dopo il salvataggio:', newUtente.password);
     console.log('Nuovo utente registrato:', email);
 
     res.status(201).json({ message: "Registrazione effettuata con successo" });
