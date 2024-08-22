@@ -61,19 +61,22 @@ const PersonalizedAdvice = () => {
   }
 
   return (
-    <Container>
+    <Container fluid>
       <h2 className="mb-4">Consigli Personalizzati</h2>
       <Card>
         <Card.Header>I tuoi consigli per una migliore gestione finanziaria</Card.Header>
         <ListGroup variant="flush">
           {advice.map((item, index) => (
             <ListGroup.Item key={index}>
-              <div className="d-flex justify-content-between align-items-start">
-                <div className="ms-2 me-auto">
+              <div className="d-flex flex-column flex-md-row justify-content-between align-items-start">
+                <div className="mb-2 mb-md-0">
                   <div className="fw-bold">{item.titolo}</div>
-                  {highlightChanges(item.descrizione)}
+                  <div>{highlightChanges(item.descrizione)}</div>
                 </div>
-                <Badge bg={item.tipo === 'warning' ? 'danger' : item.tipo === 'success' ? 'success' : 'info'} pill>
+                <Badge 
+                  bg={item.tipo === 'warning' ? 'danger' : item.tipo === 'success' ? 'success' : 'info'} 
+                  className="mt-2 mt-md-0"
+                >
                   {item.tipo === 'warning' ? 'Attenzione' : item.tipo === 'success' ? 'Successo' : 'Info'}
                 </Badge>
               </div>

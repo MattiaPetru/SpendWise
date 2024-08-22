@@ -29,9 +29,9 @@ const RegisterPage = () => {
   };
 
   return (
-    <Container>
-      <Row className="justify-content-md-center mt-5">
-        <Col xs={12} md={6}>
+    <Container fluid className="py-5">
+      <Row className="justify-content-center">
+        <Col xs={12} sm={10} md={8} lg={6}>
           <Card>
             <Card.Body>
               <h2 className="text-center mb-4">Registrazione</h2>

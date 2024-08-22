@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import DashboardHome from './DashboardHome';
 import AddExpense from './AddExpense';
@@ -12,6 +12,8 @@ import GuidedTour from './GuidedTour';
 
 const DashboardLayout = () => {
   const [runTour, setRunTour] = useState(false);
+  const [showSidebar, setShowSidebar] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const hasSeenTour = localStorage.getItem('hasSeenTour');
@@ -21,27 +23,42 @@ const DashboardLayout = () => {
     }
   }, []);
 
+  useEffect(() => {
+    setShowSidebar(false);
+  }, [location]);
+
   const handleStartTour = () => {
     setRunTour(true);
+  };
+
+  const toggleSidebar = () => {
+    setShowSidebar(!showSidebar);
   };
 
   return (
     <Container fluid className="p-0">
       <GuidedTour run={runTour} setRun={setRunTour} />
       <Row className="g-0">
-        <Col md={3} lg={2} className="sidebar-wrapper" style={{ position: 'sticky', top: 0, height: '100vh' }}>
+        <Col xs={12} md={3} lg={2} className={`sidebar-wrapper ${showSidebar ? 'd-block' : 'd-none d-md-block'}`} style={{ position: 'fixed', top: 0, bottom: 0, zIndex: 1000 }}>
           <Sidebar />
         </Col>
-        <Col md={9} lg={10} className="p-4" style={{ backgroundColor: '#f8f9fa' }}>
-          <div className="bg-white shadow-sm rounded p-4" style={{ minHeight: 'calc(100vh - 2rem)' }}>
-            <Button 
-              variant="outline-primary" 
-              size="sm" 
-              onClick={handleStartTour}
-              className="mb-3"
-            >
-              Riavvia Tour Guidato
-            </Button>
+        <Col xs={12} md={{ span: 9, offset: 3 }} lg={{ span: 10, offset: 2 }} className="p-4">
+          <Button 
+            variant="primary" 
+            className="d-md-none mb-3" 
+            onClick={toggleSidebar}
+          >
+            {showSidebar ? 'Nascondi Menu' : 'Mostra Menu'}
+          </Button>
+          <Button 
+            variant="outline-primary" 
+            size="sm" 
+            onClick={handleStartTour}
+            className="mb-3 ms-2"
+          >
+            Riavvia Tour Guidato
+          </Button>
+          <div className="bg-white shadow-sm rounded p-4">
             <Routes>
               <Route path="/" element={<DashboardHome />} />
               <Route path="/add-expense" element={<AddExpense />} />

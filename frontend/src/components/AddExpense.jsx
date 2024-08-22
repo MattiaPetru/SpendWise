@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Form, Button, Alert } from 'react-bootstrap';
+import { Form, Button, Alert, Container, Row, Col } from 'react-bootstrap';
 import { useAuth } from '../AuthContext';
 
 const AddExpense = () => {
   const [importo, setImporto] = useState('');
   const [categoria, setCategoria] = useState('');
   const [descrizione, setDescrizione] = useState('');
-  const [data, setData] = useState(''); // Nuovo stato per la data
+  const [data, setData] = useState('');
   const [ricevuta, setRicevuta] = useState(null);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
@@ -31,7 +31,7 @@ const AddExpense = () => {
     formData.append('importo', importo);
     formData.append('categoria', categoria);
     formData.append('descrizione', descrizione);
-    formData.append('data', data); // Aggiungiamo la data al FormData
+    formData.append('data', data);
     if (ricevuta) {
       formData.append('ricevuta', ricevuta);
     }
@@ -63,62 +63,68 @@ const AddExpense = () => {
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
-      <h2>Aggiungi una nuova spesa</h2>
-      {error && <Alert variant="danger">{error}</Alert>}
-      {success && <Alert variant="success">Spesa aggiunta con successo!</Alert>}
-      <Form.Group className="mb-3">
-        <Form.Label>Importo</Form.Label>
-        <Form.Control 
-          type="number" 
-          value={importo} 
-          onChange={(e) => setImporto(e.target.value)} 
-          required 
-        />
-      </Form.Group>
-      <Form.Group className="mb-3">
-        <Form.Label>Categoria</Form.Label>
-        <Form.Select
-          value={categoria}
-          onChange={(e) => setCategoria(e.target.value)}
-          required
-        >
-          <option value="">Seleziona una categoria</option>
-          {categorie.map((cat, index) => (
-            <option key={index} value={cat}>{cat}</option>
-          ))}
-        </Form.Select>
-      </Form.Group>
-      <Form.Group className="mb-3">
-        <Form.Label>Data</Form.Label>
-        <Form.Control 
-          type="date" 
-          value={data} 
-          onChange={(e) => setData(e.target.value)} 
-          required 
-        />
-      </Form.Group>
-      <Form.Group className="mb-3">
-        <Form.Label>Descrizione</Form.Label>
-        <Form.Control 
-          as="textarea" 
-          rows={3} 
-          value={descrizione} 
-          onChange={(e) => setDescrizione(e.target.value)} 
-          required 
-        />
-      </Form.Group>
-      <Form.Group className="mb-3">
-        <Form.Label>Ricevuta (opzionale)</Form.Label>
-        <Form.Control 
-          type="file" 
-          onChange={(e) => setRicevuta(e.target.files[0])} 
-        />
-      </Form.Group>
-      <Button variant="primary" type="submit">
-        Aggiungi Spesa
-      </Button>
-    </Form>
+    <Container fluid>
+      <Row className="justify-content-md-center">
+        <Col xs={12} md={8} lg={6}>
+          <h2 className="mb-4">Aggiungi una nuova spesa</h2>
+          {error && <Alert variant="danger">{error}</Alert>}
+          {success && <Alert variant="success">Spesa aggiunta con successo!</Alert>}
+          <Form onSubmit={handleSubmit}>
+            <Form.Group className="mb-3">
+              <Form.Label>Importo</Form.Label>
+              <Form.Control 
+                type="number" 
+                value={importo} 
+                onChange={(e) => setImporto(e.target.value)} 
+                required 
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Categoria</Form.Label>
+              <Form.Select
+                value={categoria}
+                onChange={(e) => setCategoria(e.target.value)}
+                required
+              >
+                <option value="">Seleziona una categoria</option>
+                {categorie.map((cat, index) => (
+                  <option key={index} value={cat}>{cat}</option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Data</Form.Label>
+              <Form.Control 
+                type="date" 
+                value={data} 
+                onChange={(e) => setData(e.target.value)} 
+                required 
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Descrizione</Form.Label>
+              <Form.Control 
+                as="textarea" 
+                rows={3} 
+                value={descrizione} 
+                onChange={(e) => setDescrizione(e.target.value)} 
+                required 
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Ricevuta (opzionale)</Form.Label>
+              <Form.Control 
+                type="file" 
+                onChange={(e) => setRicevuta(e.target.files[0])} 
+              />
+            </Form.Group>
+            <Button variant="primary" type="submit" className="w-100">
+              Aggiungi Spesa
+            </Button>
+          </Form>
+        </Col>
+      </Row>
+    </Container>
   );
 };
 

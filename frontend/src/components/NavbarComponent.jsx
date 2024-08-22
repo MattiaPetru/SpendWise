@@ -18,7 +18,7 @@ const NavbarComponent = () => {
   };
 
   return (
-    <Navbar bg="dark" variant="dark" expand="lg">
+    <Navbar bg="dark" variant="dark" expand="lg" className="mb-3">
       <Container>
         <Navbar.Brand as={Link} to="/">SpendWise</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />

@@ -44,7 +44,7 @@ const HomePage = () => {
   };
 
   return (
-    <Container>
+    <Container fluid>
       <Row className="my-5">
         <Col>
           <h1 className="text-center mb-4">Benvenuto su SpendWise</h1>
@@ -55,7 +55,7 @@ const HomePage = () => {
       </Row>
 
       <Row className="my-5">
-        <Col md={8} className="mx-auto">
+        <Col md={10} lg={8} className="mx-auto">
           <h2 className="text-center mb-4">Cosa offre SpendWise?</h2>
           <ul className="list-unstyled">
             <li className="mb-4">
@@ -79,14 +79,11 @@ const HomePage = () => {
               <p>I tuoi dati finanziari sono al sicuro con noi. Utilizziamo le più recenti tecnologie di crittografia per proteggere le tue informazioni.</p>
             </li>
           </ul>
-          <p className="text-center mt-5">
-            Scorri verso il basso per iniziare a gestire le tue finanze in modo intelligente con SpendWise!
-          </p>
         </Col>
       </Row>
 
       <Row className="my-5">
-        <Col md={6} className="mb-4">
+        <Col lg={6} className="mb-4">
           <AnimatedSection direction="left">
             <Card>
               <Card.Header>Tendenze di Spesa</Card.Header>
@@ -110,7 +107,7 @@ const HomePage = () => {
             </Card>
           </AnimatedSection>
         </Col>
-        <Col md={6} className="mb-4">
+        <Col lg={6} className="mb-4">
           <AnimatedSection direction="right">
             <Card>
               <Card.Header>Inserisci Spesa</Card.Header>

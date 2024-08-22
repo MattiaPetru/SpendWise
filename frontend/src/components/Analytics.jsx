@@ -1,57 +1,20 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
-import { Bar, Pie } from 'react-chartjs-2';
-import { Form, Card, Row, Col, Alert } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
+import { Container, Row, Col, Card, Form, Alert } from 'react-bootstrap';
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { useAuth } from '../AuthContext';
-
-// Registriamo i componenti necessari di Chart.js
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  ArcElement,
-  Title,
-  Tooltip,
-  Legend
-);
 
 const Analytics = () => {
   const [chartType, setChartType] = useState('mensile');
-  const [chartData, setChartData] = useState(null);
+  const [chartData, setChartData] = useState([]);
   const [error, setError] = useState('');
   const { utente } = useAuth();
-  const chartRef = useRef(null);
-  const chartInstanceRef = useRef(null);
 
-  // Colori predefiniti per le categorie
-  const categoryColors = useMemo(() => ({
-    Alimentari: 'rgba(255, 99, 132, 0.6)',
-    Trasporti: 'rgba(54, 162, 235, 0.6)',
-    Intrattenimento: 'rgba(255, 206, 86, 0.6)',
-    Salute: 'rgba(75, 192, 192, 0.6)',
-    Casa: 'rgba(153, 102, 255, 0.6)',
-    Abbigliamento: 'rgba(255, 159, 64, 0.6)',
-    Istruzione: 'rgba(199, 199, 199, 0.6)',
-    Altro: 'rgba(83, 102, 255, 0.6)',
-  }), []);
-
-  // Effetto per caricare i dati quando il tipo di grafico o l'utente cambiano
   useEffect(() => {
     if (utente && utente.token) {
       fetchData();
     }
   }, [chartType, utente]);
 
-  // Effetto per pulire l'istanza del grafico quando il componente viene smontato
-  useEffect(() => {
-    return () => {
-      if (chartInstanceRef.current) {
-        chartInstanceRef.current.destroy();
-      }
-    };
-  }, []);
-
-  // Funzione per recuperare i dati dal server
   const fetchData = async () => {
     try {
       setError('');
@@ -68,9 +31,6 @@ const Analytics = () => {
         case 'annuale':
           endpoint = '/api/spese/annuali';
           break;
-        case 'categoria':
-          endpoint = '/api/spese/per-categoria';
-          break;
         default:
           endpoint = '/api/spese/mensili-dettagliate';
       }
@@ -86,113 +46,14 @@ const Analytics = () => {
       }
 
       const data = await response.json();
-      prepareChartData(data);
+      setChartData(data);
     } catch (error) {
       console.error('Errore nel caricamento dei dati:', error);
       setError('Si è verificato un errore nel caricamento dei dati. Riprova più tardi.');
     }
   };
 
-  // Funzione per preparare i dati del grafico
-  const prepareChartData = (data) => {
-    if (chartType === 'categoria') {
-      setChartData({
-        labels: data.map(item => item._id),
-        datasets: [{
-          data: data.map(item => item.totale),
-          backgroundColor: data.map(item => categoryColors[item._id] || getRandomColor()),
-        }],
-      });
-    } else {
-      const categories = [...new Set(data.flatMap(Object.keys).filter(key => key !== '_id' && key !== 'totale'))];
-      const datasets = categories.map(category => ({
-        label: category,
-        data: data.map(item => item[category] || 0),
-        backgroundColor: categoryColors[category] || getRandomColor(),
-      }));
-
-      setChartData({
-        labels: data.map(item => item._id),
-        datasets,
-      });
-    }
-  };
-
-  // Funzione per generare un colore casuale
-  const getRandomColor = () => {
-    const r = Math.floor(Math.random() * 255);
-    const g = Math.floor(Math.random() * 255);
-    const b = Math.floor(Math.random() * 255);
-    return `rgba(${r}, ${g}, ${b}, 0.6)`;
-  };
-
-  // Opzioni del grafico
-  const options = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: 'top',
-        onClick: function(e, legendItem, legend) {
-          const index = legendItem.datasetIndex;
-          const ci = legend.chart;
-          if (ci.isDatasetVisible(index)) {
-            ci.hide(index);
-            legendItem.hidden = true;
-          } else {
-            ci.show(index);
-            legendItem.hidden = false;
-          }
-        }
-      },
-      title: {
-        display: true,
-        text: `Spese ${chartType.charAt(0).toUpperCase() + chartType.slice(1)}`,
-        font: {
-          size: 18,
-          weight: 'bold',
-        },
-      },
-    },
-    scales: chartType !== 'categoria' ? {
-      x: {
-        title: {
-          display: true,
-          text: getXAxisLabel(),
-          font: {
-            size: 14,
-            weight: 'bold',
-          },
-        },
-        ticks: {
-          maxRotation: 45,
-          minRotation: 45
-        }
-      },
-      y: {
-        title: {
-          display: true,
-          text: 'Importo (€)',
-          font: {
-            size: 14,
-            weight: 'bold',
-          },
-        },
-        ticks: {
-          callback: function(value) {
-            return new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' }).format(value);
-          },
-        },
-      }
-    } : {},
-    hover: {
-      mode: 'index',
-      intersect: false
-    }
-  };
-
-  // Funzione per ottenere l'etichetta dell'asse X
-  function getXAxisLabel() {
+  const getXAxisLabel = () => {
     switch(chartType) {
       case 'mensile':
         return 'Mese';
@@ -200,31 +61,9 @@ const Analytics = () => {
         return 'Trimestre';
       case 'annuale':
         return 'Anno';
-      case 'categoria':
-        return 'Categoria';
       default:
         return '';
     }
-  }
-
-  // Funzione per renderizzare il grafico
-  const renderChart = () => {
-    if (!chartData) return null;
-
-    const ChartComponent = chartType === 'categoria' ? Pie : Bar;
-
-    return (
-      <ChartComponent
-        data={chartData}
-        options={options}
-        ref={(chart) => {
-          chartRef.current = chart;
-          if (chart) {
-            chartInstanceRef.current = chart.chartInstance;
-          }
-        }}
-      />
-    );
   };
 
   if (!utente) {
@@ -232,39 +71,47 @@ const Analytics = () => {
   }
 
   return (
-    <Card className="mb-4">
-      <Card.Body>
-        <Card.Title className="mb-4">Analisi Spese</Card.Title>
-        <Row className="align-items-center mb-4">
-          <Col xs={12} sm={8} md={6} lg={4}>
-            <Form.Group>
-              <Form.Label>Tipo di grafico:</Form.Label>
-              <Form.Select 
-                size="sm"
-                value={chartType} 
-                onChange={(e) => {
-                  if (chartInstanceRef.current) {
-                    chartInstanceRef.current.destroy();
-                  }
-                  setChartType(e.target.value);
-                }}
-              >
-                <option value="mensile">Mensile</option>
-                <option value="trimestrale">Trimestrale</option>
-                <option value="annuale">Annuale</option>
-                <option value="categoria">Per Categoria</option>
-              </Form.Select>
-            </Form.Group>
-          </Col>
-        </Row>
-
-        {error && <Alert variant="danger">{error}</Alert>}
-
-        <div style={{ height: '60vh', position: 'relative' }}>
-          {renderChart()}
-        </div>
-      </Card.Body>
-    </Card>
+    <Container fluid>
+      <h2 className="mb-4">Analisi Spese</h2>
+      {error && <Alert variant="danger">{error}</Alert>}
+      <Row className="mb-4">
+        <Col xs={12} md={6} lg={4}>
+          <Form.Group>
+            <Form.Label>Tipo di grafico:</Form.Label>
+            <Form.Select 
+              value={chartType} 
+              onChange={(e) => setChartType(e.target.value)}
+            >
+              <option value="mensile">Mensile</option>
+              <option value="trimestrale">Trimestrale</option>
+              <option value="annuale">Annuale</option>
+            </Form.Select>
+          </Form.Group>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <Card>
+            <Card.Body>
+              <div style={{ width: '100%', height: '400px' }}>
+                <ResponsiveContainer>
+                  <BarChart data={chartData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="_id" label={{ value: getXAxisLabel(), position: 'insideBottom', offset: -5 }} />
+                    <YAxis label={{ value: 'Importo (€)', angle: -90, position: 'insideLeft' }} />
+                    <Tooltip formatter={(value) => `€${value.toFixed(2)}`} />
+                    <Legend />
+                    {Object.keys(chartData[0] || {}).filter(key => key !== '_id').map((key, index) => (
+                      <Bar key={key} dataKey={key} fill={`hsl(${index * 30}, 70%, 50%)`} />
+                    ))}
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+    </Container>
   );
 };
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Form, Button, Row, Col } from 'react-bootstrap';
+import { Container, Row, Col, Table, Form, Button, Alert } from 'react-bootstrap';
 import { useAuth } from '../AuthContext';
 
 const ViewExpenses = () => {
@@ -79,16 +79,16 @@ const ViewExpenses = () => {
   };
 
   if (error) {
-    return <div className="text-danger">{error}</div>;
+    return <Alert variant="danger">{error}</Alert>;
   }
 
   return (
-    <div>
-      <h2>Visualizza Spese</h2>
+    <Container fluid>
+      <h2 className="mb-4">Visualizza Spese</h2>
       
       <Form className="mb-4">
         <Row>
-          <Col md={3}>
+          <Col xs={12} sm={6} md={3} className="mb-3">
             <Form.Group>
               <Form.Label>Data</Form.Label>
               <Form.Control 
@@ -98,7 +98,7 @@ const ViewExpenses = () => {
               />
             </Form.Group>
           </Col>
-          <Col md={3}>
+          <Col xs={12} sm={6} md={3} className="mb-3">
             <Form.Group>
               <Form.Label>Categoria</Form.Label>
               <Form.Select 
@@ -116,7 +116,7 @@ const ViewExpenses = () => {
               </Form.Select>
             </Form.Group>
           </Col>
-          <Col md={3}>
+          <Col xs={12} sm={6} md={3} className="mb-3">
             <Form.Group>
               <Form.Label>Importo Min</Form.Label>
               <Form.Control 
@@ -126,7 +126,7 @@ const ViewExpenses = () => {
               />
             </Form.Group>
           </Col>
-          <Col md={3}>
+          <Col xs={12} sm={6} md={3} className="mb-3">
             <Form.Group>
               <Form.Label>Importo Max</Form.Label>
               <Form.Control 
@@ -138,7 +138,7 @@ const ViewExpenses = () => {
           </Col>
         </Row>
         <Row className="mt-2">
-          <Col md={6}>
+          <Col xs={12} md={6} className="mb-3">
             <Form.Group>
               <Form.Label>Descrizione</Form.Label>
               <Form.Control 
@@ -149,34 +149,36 @@ const ViewExpenses = () => {
               />
             </Form.Group>
           </Col>
-          <Col md={6} className="d-flex align-items-end">
+          <Col xs={12} md={6} className="d-flex align-items-end mb-3">
             <Button variant="primary" onClick={applyFilters} className="me-2">Applica Filtri</Button>
             <Button variant="secondary" onClick={resetFilters}>Resetta Filtri</Button>
           </Col>
         </Row>
       </Form>
 
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>Data</th>
-            <th>Categoria</th>
-            <th>Importo</th>
-            <th>Descrizione</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredSpese.map(spesa => (
-            <tr key={spesa._id}>
-              <td>{new Date(spesa.data).toLocaleDateString()}</td>
-              <td>{spesa.categoria}</td>
-              <td>€{spesa.importo.toFixed(2)}</td>
-              <td>{spesa.descrizione}</td>
+      <div className="table-responsive">
+        <Table striped bordered hover>
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Categoria</th>
+              <th>Importo</th>
+              <th>Descrizione</th>
             </tr>
-          ))}
-        </tbody>
-      </Table>
-    </div>
+          </thead>
+          <tbody>
+            {filteredSpese.map(spesa => (
+              <tr key={spesa._id}>
+                <td>{new Date(spesa.data).toLocaleDateString()}</td>
+                <td>{spesa.categoria}</td>
+                <td>€{spesa.importo.toFixed(2)}</td>
+                <td>{spesa.descrizione}</td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </div>
+    </Container>
   );
 };
 

@@ -92,12 +92,12 @@ const BudgetManagement = () => {
   };
 
   return (
-    <Container>
+    <Container fluid>
       <h2 className="mb-4">Gestione Budget</h2>
       {error && <Alert variant="danger">{error}</Alert>}
       {success && <Alert variant="success">{success}</Alert>}
       <Row>
-        <Col md={6}>
+        <Col xs={12} lg={6} className="mb-4">
           <Card>
             <Card.Header>Aggiungi Nuovo Budget</Card.Header>
             <Card.Body>
@@ -135,42 +135,44 @@ const BudgetManagement = () => {
             </Card.Body>
           </Card>
         </Col>
-        <Col md={6}>
+        <Col xs={12} lg={6}>
           <Card>
             <Card.Header>Budget Attuali</Card.Header>
             <Card.Body>
-              <Table striped bordered hover>
-                <thead>
-                  <tr>
-                    <th>Categoria</th>
-                    <th>Budget</th>
-                    <th>Speso</th>
-                    <th>Progresso</th>
-                    <th>Azioni</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {budgets.map((budget) => (
-                    <tr key={budget._id}>
-                      <td>{budget.categoria}</td>
-                      <td>€{budget.importo.toFixed(2)}</td>
-                      <td>€{budget.speso ? budget.speso.toFixed(2) : '0.00'}</td>
-                      <td>
-                        <ProgressBar 
-                          now={budget.speso ? (budget.speso / budget.importo) * 100 : 0} 
-                          label={`${budget.speso ? ((budget.speso / budget.importo) * 100).toFixed(2) : 0}%`}
-                          variant={budget.speso > budget.importo ? "danger" : "primary"}
-                        />
-                      </td>
-                      <td>
-                        <Button variant="danger" size="sm" onClick={() => handleDelete(budget._id)}>
-                          <FaTrash />
-                        </Button>
-                      </td>
+              <div className="table-responsive">
+                <Table striped bordered hover>
+                  <thead>
+                    <tr>
+                      <th>Categoria</th>
+                      <th>Budget</th>
+                      <th>Speso</th>
+                      <th>Progresso</th>
+                      <th>Azioni</th>
                     </tr>
-                  ))}
-                </tbody>
-              </Table>
+                  </thead>
+                  <tbody>
+                    {budgets.map((budget) => (
+                      <tr key={budget._id}>
+                        <td>{budget.categoria}</td>
+                        <td>€{budget.importo.toFixed(2)}</td>
+                        <td>€{budget.speso ? budget.speso.toFixed(2) : '0.00'}</td>
+                        <td>
+                          <ProgressBar 
+                            now={budget.speso ? (budget.speso / budget.importo) * 100 : 0} 
+                            label={`${budget.speso ? ((budget.speso / budget.importo) * 100).toFixed(2) : 0}%`}
+                            variant={budget.speso > budget.importo ? "danger" : "primary"}
+                          />
+                        </td>
+                        <td>
+                          <Button variant="danger" size="sm" onClick={() => handleDelete(budget._id)}>
+                            <FaTrash />
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </div>
             </Card.Body>
           </Card>
         </Col>

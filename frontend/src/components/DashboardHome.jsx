@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Accordion, ListGroup, Alert, Button, Modal, Form } from 'react-bootstrap';
+import { Container, Row, Col, Accordion, ListGroup, Alert, Button, Modal, Form } from 'react-bootstrap';
 import { useAuth } from '../AuthContext';
 
 const DashboardHome = () => {
@@ -10,13 +10,7 @@ const DashboardHome = () => {
   const { utente } = useAuth();
 
   const categorie = [
-    'Cibo',
-    'Trasporti',
-    'Svago',
-    'Hobby',
-    'Spesa casa',
-    'Affitto',
-    'Spese ricorrenti'
+    'Cibo', 'Trasporti', 'Svago', 'Hobby', 'Spesa casa', 'Affitto', 'Spese ricorrenti'
   ];
 
   useEffect(() => {
@@ -115,52 +109,56 @@ const DashboardHome = () => {
     return <Alert variant="info">Caricamento dati utente...</Alert>;
   }
 
-  if (error) {
-    return <Alert variant="danger">{error}</Alert>;
-  }
-
   return (
-    <div className="dashboard-overview">
+    <Container fluid className="dashboard-overview">
       <h2 className="mb-4">Benvenuto nella tua dashboard</h2>
       {error && <Alert variant="danger">{error}</Alert>}
-      <Accordion defaultActiveKey="0">
-        {Object.entries(categorizedExpenses).map(([category, { spese, totale }], index) => (
-          <Accordion.Item eventKey={index.toString()} key={category}>
-            <Accordion.Header>{category} - Totale: €{totale.toFixed(2)}</Accordion.Header>
-            <Accordion.Body>
-              <ListGroup>
-                {spese.map((expense) => (
-                  <ListGroup.Item key={expense._id}>
-                    <div className="d-flex justify-content-between align-items-center">
-                      <span>{expense.descrizione}</span>
-                      <span>€{expense.importo.toFixed(2)}</span>
-                    </div>
-                    <small className="text-muted">
-                      {new Date(expense.data).toLocaleDateString()}
-                    </small>
-                    <div className="mt-2">
-                      <Button variant="outline-primary" size="sm" onClick={() => handleEdit(expense)} className="me-2">
-                        Modifica
-                      </Button>
-                      <Button variant="outline-danger" size="sm" onClick={() => handleDelete(expense._id)}>
-                        Elimina
-                      </Button>
-                    </div>
-                    {expense.urlRicevuta && (
-                      <div className="mt-2">
-                        <a href={expense.urlRicevuta} target="_blank" rel="noopener noreferrer">
-                          Visualizza Ricevuta
-                        </a>
-                      </div>
-                    )}
-                  </ListGroup.Item>
-                ))}
-              </ListGroup>
-            </Accordion.Body>
-          </Accordion.Item>
-        ))}
-      </Accordion>
-  
+      <Row>
+        <Col>
+          <Accordion defaultActiveKey="0">
+            {Object.entries(categorizedExpenses).map(([category, { spese, totale }], index) => (
+              <Accordion.Item eventKey={index.toString()} key={category}>
+                <Accordion.Header>{category} - Totale: €{totale.toFixed(2)}</Accordion.Header>
+                <Accordion.Body>
+                  <ListGroup>
+                    {spese.map((expense) => (
+                      <ListGroup.Item key={expense._id}>
+                        <Row className="align-items-center">
+                          <Col xs={12} sm={6}>
+                            <div>{expense.descrizione}</div>
+                            <small className="text-muted">
+                              {new Date(expense.data).toLocaleDateString()}
+                            </small>
+                          </Col>
+                          <Col xs={12} sm={3} className="text-sm-end">
+                            €{expense.importo.toFixed(2)}
+                          </Col>
+                          <Col xs={12} sm={3} className="mt-2 mt-sm-0">
+                            <Button variant="outline-primary" size="sm" onClick={() => handleEdit(expense)} className="me-2">
+                              Modifica
+                            </Button>
+                            <Button variant="outline-danger" size="sm" onClick={() => handleDelete(expense._id)}>
+                              Elimina
+                            </Button>
+                          </Col>
+                        </Row>
+                        {expense.urlRicevuta && (
+                          <div className="mt-2">
+                            <a href={expense.urlRicevuta} target="_blank" rel="noopener noreferrer">
+                              Visualizza Ricevuta
+                            </a>
+                          </div>
+                        )}
+                      </ListGroup.Item>
+                    ))}
+                  </ListGroup>
+                </Accordion.Body>
+              </Accordion.Item>
+            ))}
+          </Accordion>
+        </Col>
+      </Row>
+
       <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Modifica Spesa</Modal.Title>
@@ -229,8 +227,8 @@ const DashboardHome = () => {
           </Form>
         </Modal.Body>
       </Modal>
-    </div>
-  )
+    </Container>
+  );
 };
 
 export default DashboardHome;
