@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Form, Alert, Spinner } from 'react-bootstrap';
+import { Container, Row, Col, Card, Form, Alert } from 'react-bootstrap';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { useAuth } from '../AuthContext';
 
@@ -18,7 +18,6 @@ const Analytics = () => {
   const [chartType, setChartType] = useState('mensile');
   const [chartData, setChartData] = useState([]);
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(true);
   const { utente } = useAuth();
 
   useEffect(() => {
@@ -29,10 +28,23 @@ const Analytics = () => {
 
   const fetchData = async () => {
     try {
-      setLoading(true);
       setError('');
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
-      let endpoint = `/api/spese/${chartType}`;
+      let endpoint;
+      
+      switch(chartType) {
+        case 'mensile':
+          endpoint = '/api/spese/mensili-dettagliate';
+          break;
+        case 'trimestrale':
+          endpoint = '/api/spese/trimestrali';
+          break;
+        case 'annuale':
+          endpoint = '/api/spese/annuali';
+          break;
+        default:
+          endpoint = '/api/spese/mensili-dettagliate';
+      }
 
       const response = await fetch(`${apiUrl}${endpoint}`, {
         headers: {
@@ -49,8 +61,6 @@ const Analytics = () => {
     } catch (error) {
       console.error('Errore nel caricamento dei dati:', error);
       setError('Si è verificato un errore nel caricamento dei dati. Riprova più tardi.');
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -114,16 +124,6 @@ const Analytics = () => {
       </ResponsiveContainer>
     );
   };
-
-  if (loading) {
-    return (
-      <Container className="d-flex justify-content-center align-items-center" style={{height: '300px'}}>
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden">Caricamento...</span>
-        </Spinner>
-      </Container>
-    );
-  }
 
   if (error) {
     return <Alert variant="danger">{error}</Alert>;
