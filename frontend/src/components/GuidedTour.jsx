@@ -50,17 +50,25 @@ const GuidedTour = ({ run, setRun }) => {
           primaryColor: '#007bff',
         },
         tooltip: {
-          fontSize: 15,
-          padding: 15,
+          fontSize: '14px',
+          padding: '10px 15px',
         },
         tooltipContainer: {
           textAlign: 'left',
         },
         buttonNext: {
           backgroundColor: '#007bff',
+          fontSize: '14px',
+          padding: '8px 15px',
         },
         buttonBack: {
-          marginRight: 10,
+          color: '#007bff',
+          fontSize: '14px',
+          padding: '8px 15px',
+        },
+        buttonSkip: {
+          color: '#6c757d',
+          fontSize: '14px',
         },
       }}
       callback={handleJoyrideCallback}

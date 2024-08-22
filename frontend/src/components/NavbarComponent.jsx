@@ -19,7 +19,7 @@ const NavbarComponent = () => {
 
   return (
     <Navbar bg="dark" variant="dark" expand="lg" className="mb-3">
-      <Container>
+      <Container fluid>
         <Navbar.Brand as={Link} to="/">SpendWise</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">

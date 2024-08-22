@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Form, Alert } from 'react-bootstrap';
+import { Container, Row, Col, Card, Form, Alert, Spinner } from 'react-bootstrap';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { useAuth } from '../AuthContext';
 
@@ -116,7 +116,13 @@ const Analytics = () => {
   };
 
   if (loading) {
-    return <Alert variant="info">Caricamento dati in corso...</Alert>;
+    return (
+      <Container className="d-flex justify-content-center align-items-center" style={{height: '300px'}}>
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Caricamento...</span>
+        </Spinner>
+      </Container>
+    );
   }
 
   if (error) {
@@ -127,7 +133,7 @@ const Analytics = () => {
     <Container fluid>
       <h2 className="mb-4">Analisi Spese</h2>
       <Row className="mb-4">
-        <Col xs={12} md={6} lg={4}>
+        <Col xs={12} sm={6} md={4} lg={3}>
           <Form.Group>
             <Form.Label>Tipo di grafico:</Form.Label>
             <Form.Select 
@@ -142,7 +148,7 @@ const Analytics = () => {
         </Col>
       </Row>
       <Row>
-        <Col md={12} lg={6} className="mb-4">
+        <Col xs={12} lg={6} className="mb-4">
           <Card>
             <Card.Header>Grafico a Barre</Card.Header>
             <Card.Body>
@@ -150,7 +156,7 @@ const Analytics = () => {
             </Card.Body>
           </Card>
         </Col>
-        <Col md={12} lg={6} className="mb-4">
+        <Col xs={12} lg={6} className="mb-4">
           <Card>
             <Card.Header>Grafico a Torta</Card.Header>
             <Card.Body>

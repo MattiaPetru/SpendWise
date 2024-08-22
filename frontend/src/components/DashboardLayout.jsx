@@ -38,10 +38,30 @@ const DashboardLayout = () => {
   return (
     <div className="d-flex flex-column flex-md-row">
       <GuidedTour run={runTour} setRun={setRunTour} />
-      <div className={`sidebar-wrapper ${showSidebar ? 'd-block' : 'd-none d-md-block'}`} style={{ width: '250px', position: 'fixed', top: '56px', bottom: 0, left: 0, overflowY: 'auto', backgroundColor: '#212529', zIndex: 1000 }}>
+      <div 
+        className={`sidebar-wrapper ${showSidebar ? 'd-block' : 'd-none d-md-block'}`} 
+        style={{ 
+          width: '250px', 
+          position: 'fixed', 
+          top: '56px', 
+          bottom: 0, 
+          left: 0, 
+          overflowY: 'auto', 
+          backgroundColor: '#212529', 
+          zIndex: 1000 
+        }}
+      >
         <Sidebar />
       </div>
-      <div style={{ marginLeft: 0, marginTop: '56px', width: '100%', transition: 'margin-left 0.3s' }} className="flex-grow-1 p-3 p-md-4">
+      <div 
+        style={{ 
+          marginLeft: 0, 
+          marginTop: '56px', 
+          width: '100%', 
+          transition: 'margin-left 0.3s'
+        }} 
+        className="flex-grow-1 p-3 p-md-4"
+      >
         <Container fluid>
           <Row className="mb-3">
             <Col>

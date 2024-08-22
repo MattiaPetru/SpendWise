@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Accordion, ListGroup, Alert, Button, Modal, Form } from 'react-bootstrap';
+import { Container, Row, Col, Accordion, ListGroup, Alert, Button, Modal, Form, Card, Spinner } from 'react-bootstrap';
 import { useAuth } from '../AuthContext';
 
 const DashboardHome = () => {
   const [categorizedExpenses, setCategorizedExpenses] = useState({});
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
   const [showEditModal, setShowEditModal] = useState(false);
   const [currentExpense, setCurrentExpense] = useState(null);
   const { utente } = useAuth();
@@ -21,6 +22,7 @@ const DashboardHome = () => {
 
   const fetchExpenses = async () => {
     try {
+      setLoading(true);
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
       const response = await fetch(`${apiUrl}/api/spese`, {
         headers: {
@@ -38,6 +40,8 @@ const DashboardHome = () => {
     } catch (error) {
       console.error('Errore nel caricamento delle spese:', error);
       setError('Si è verificato un errore nel caricamento delle spese. Riprova più tardi.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -105,14 +109,23 @@ const DashboardHome = () => {
     }
   };
 
-  if (!utente) {
-    return <Alert variant="info">Caricamento dati utente...</Alert>;
+  if (loading) {
+    return (
+      <Container className="d-flex justify-content-center align-items-center" style={{height: '300px'}}>
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Caricamento...</span>
+        </Spinner>
+      </Container>
+    );
+  }
+
+  if (error) {
+    return <Alert variant="danger">{error}</Alert>;
   }
 
   return (
     <Container fluid className="dashboard-overview">
       <h2 className="mb-4">Benvenuto nella tua dashboard</h2>
-      {error && <Alert variant="danger">{error}</Alert>}
       <Row>
         <Col>
           <Accordion defaultActiveKey="0">

@@ -29,7 +29,7 @@ const Sidebar = () => {
   ];
 
   return (
-    <div className="h-100 d-flex flex-column">
+    <div className="d-flex flex-column h-100">
       <h3 className="text-center py-4 text-light">SpendWise</h3>
       <Nav className="flex-column">
         {menuItems.map((item) => (
@@ -38,10 +38,10 @@ const Sidebar = () => {
             as={Link}
             to={item.path}
             style={location.pathname === item.path ? activeLinkStyle : linkStyle}
-            className={`${item.className}`}
+            className={`${item.className} d-flex align-items-center`}
           >
             <item.icon className="me-2" />
-            {item.label}
+            <span>{item.label}</span>
           </Nav.Link>
         ))}
       </Nav>

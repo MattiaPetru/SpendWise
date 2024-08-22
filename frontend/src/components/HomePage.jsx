@@ -44,7 +44,7 @@ const HomePage = () => {
   };
 
   return (
-    <Container>
+    <Container fluid>
       <Row className="my-5">
         <Col>
           <h1 className="text-center mb-4">Benvenuto su SpendWise</h1>

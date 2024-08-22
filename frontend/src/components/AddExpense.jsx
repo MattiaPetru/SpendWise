@@ -59,7 +59,7 @@ const AddExpense = () => {
   return (
     <Container fluid>
       <Row className="justify-content-center">
-        <Col xs={12} md={8} lg={6}>
+        <Col xs={12} md={10} lg={8} xl={6}>
           <h2 className="mb-4">Aggiungi una nuova spesa</h2>
           {error && <Alert variant="danger">{error}</Alert>}
           {success && <Alert variant="success">Spesa aggiunta con successo!</Alert>}

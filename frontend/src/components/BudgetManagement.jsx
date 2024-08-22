@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Form, Button, Table, Alert, ProgressBar } from 'react-bootstrap';
+import { Container, Row, Col, Card, Form, Button, Table, Alert, ProgressBar, Spinner } from 'react-bootstrap';
 import { FaTrash } from 'react-icons/fa';
 import { useAuth } from '../AuthContext';
 
@@ -8,6 +8,7 @@ const BudgetManagement = () => {
   const [newBudget, setNewBudget] = useState({ categoria: '', importo: '' });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [loading, setLoading] = useState(true);
   const { utente } = useAuth();
 
   const categoriePredefinite = [
@@ -22,6 +23,7 @@ const BudgetManagement = () => {
 
   const fetchBudgets = async () => {
     try {
+      setLoading(true);
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
       const response = await fetch(`${apiUrl}/api/budgets`, {
         headers: {
@@ -36,6 +38,8 @@ const BudgetManagement = () => {
     } catch (error) {
       console.error('Errore nel caricamento dei budget:', error);
       setError('Si è verificato un errore nel caricamento dei budget. Riprova più tardi.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -90,6 +94,16 @@ const BudgetManagement = () => {
       setError('Si è verificato un errore nell\'eliminazione del budget. Riprova più tardi.');
     }
   };
+
+  if (loading) {
+    return (
+      <Container className="d-flex justify-content-center align-items-center" style={{height: '300px'}}>
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Caricamento...</span>
+        </Spinner>
+      </Container>
+    );
+  }
 
   return (
     <Container fluid>
