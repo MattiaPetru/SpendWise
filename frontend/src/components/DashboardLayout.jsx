@@ -36,13 +36,13 @@ const DashboardLayout = () => {
   };
 
   return (
-    <Container fluid className="p-0">
+    <div className="d-flex">
       <GuidedTour run={runTour} setRun={setRunTour} />
-      <Row className="g-0">
-        <Col xs={12} md={3} lg={2} className="sidebar-wrapper" style={{ position: 'sticky', top: '0', height: '100vh', overflowY: 'auto', zIndex: 1000, paddingTop: '56px' }}>
-          <Sidebar />
-        </Col>
-        <Col xs={12} md={9} lg={10} className="p-4" style={{ paddingTop: 'calc(56px + 1.5rem)' }}>
+      <div className={`sidebar-wrapper ${showSidebar ? 'd-block' : 'd-none d-md-block'}`} style={{ width: '250px', position: 'fixed', top: '56px', bottom: 0, left: 0, overflowY: 'auto', backgroundColor: '#f8f9fa', zIndex: 1000 }}>
+        <Sidebar />
+      </div>
+      <div style={{ marginLeft: '250px', width: 'calc(100% - 250px)', paddingTop: '56px' }}>
+        <Container fluid className="p-4">
           <Button 
             variant="primary" 
             className="d-md-none mb-3" 
@@ -68,9 +68,9 @@ const DashboardLayout = () => {
               <Route path="/advice" element={<PersonalizedAdvice />} />
             </Routes>
           </div>
-        </Col>
-      </Row>
-    </Container>
+        </Container>
+      </div>
+    </div>
   );
 };
 
