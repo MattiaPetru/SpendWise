@@ -46,12 +46,12 @@ const Sidebar = () => {
         <h3 className="text-light text-center mb-4">SpendWise</h3>
         <Nav className="flex-column">
           {[
-            { path: '/dashboard', label: 'Dashboard' },
-            { path: '/dashboard/add-expense', label: 'Aggiungi Spesa' },
-            { path: '/dashboard/expenses', label: 'Visualizza Spese' },
-            { path: '/dashboard/analytics', label: 'Analisi' },
-            { path: '/dashboard/budget', label: 'Gestione Budget' }, // Nuova voce
-            { path: '/dashboard/advice', label: 'Consigli Personalizzati' }, // Nuova voce
+            { path: '/dashboard', label: 'Dashboard', className: 'dashboard-overview' },
+            { path: '/dashboard/add-expense', label: 'Aggiungi Spesa', className: 'add-expense-button' },
+            { path: '/dashboard/expenses', label: 'Visualizza Spese', className: 'view-expenses-link' },
+            { path: '/dashboard/analytics', label: 'Analisi', className: 'analytics-link' },
+            { path: '/dashboard/budget', label: 'Gestione Budget', className: 'budget-management-link' },
+            { path: '/dashboard/advice', label: 'Consigli Personalizzati', className: 'personalized-advice-link' },
           ].map((item) => {
             const isActive = location.pathname === item.path;
             return (
@@ -60,7 +60,7 @@ const Sidebar = () => {
                 as={Link}
                 to={item.path}
                 style={isActive ? activeLinkStyle : linkStyle}
-                className="position-relative"
+                className={`position-relative ${item.className}`}
               >
                 {item.label}
                 <div style={getActiveLinkBefore(isActive)} />

@@ -120,8 +120,9 @@ const DashboardHome = () => {
   }
 
   return (
-    <>
+    <div className="dashboard-overview">
       <h2 className="mb-4">Benvenuto nella tua dashboard</h2>
+      {error && <Alert variant="danger">{error}</Alert>}
       <Accordion defaultActiveKey="0">
         {Object.entries(categorizedExpenses).map(([category, { spese, totale }], index) => (
           <Accordion.Item eventKey={index.toString()} key={category}>
@@ -159,7 +160,7 @@ const DashboardHome = () => {
           </Accordion.Item>
         ))}
       </Accordion>
-
+  
       <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Modifica Spesa</Modal.Title>
@@ -228,8 +229,8 @@ const DashboardHome = () => {
           </Form>
         </Modal.Body>
       </Modal>
-    </>
-  );
+    </div>
+  )
 };
 
 export default DashboardHome;
