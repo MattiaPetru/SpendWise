@@ -1,9 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Form, Alert } from 'react-bootstrap';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { useAuth } from '../AuthContext';
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d', '#ffc658', '#8dd1e1'];
+const COLORS = {
+  'Cibo': '#FF6384',
+  'Trasporti': '#36A2EB',
+  'Svago': '#FFCE56',
+  'Hobby': '#4BC0C0',
+  'Spesa casa': '#9966FF',
+  'Affitto': '#FF9F40',
+  'Spese ricorrenti': '#FF6384',
+  'Altro': '#C9CBCF'
+};
 
 const Analytics = () => {
   const [chartType, setChartType] = useState('mensile');
@@ -32,9 +41,6 @@ const Analytics = () => {
           break;
         case 'annuale':
           endpoint = '/api/spese/annuali';
-          break;
-        case 'categoria':
-          endpoint = '/api/spese/per-categoria';
           break;
         default:
           endpoint = '/api/spese/mensili-dettagliate';
@@ -79,50 +85,49 @@ const Analytics = () => {
         <YAxis label={{ value: 'Importo (€)', angle: -90, position: 'insideLeft' }} />
         <Tooltip formatter={(value) => `€${value.toFixed(2)}`} />
         <Legend />
-        {Object.keys(chartData[0] || {}).filter(key => key !== '_id').map((key, index) => (
-          <Bar key={key} dataKey={key} fill={COLORS[index % COLORS.length]} />
+        {Object.keys(chartData[0] || {}).filter(key => key !== '_id').map((key) => (
+          <Bar key={key} dataKey={key} fill={COLORS[key] || COLORS['Altro']} />
         ))}
       </BarChart>
     </ResponsiveContainer>
   );
 
-  const renderPieChart = () => (
-    <ResponsiveContainer width="100%" height={400}>
-      <PieChart>
-        <Pie
-          data={chartData}
-          dataKey="totale"
-          nameKey="_id"
-          cx="50%"
-          cy="50%"
-          outerRadius={150}
-          fill="#8884d8"
-          label={({name, percent}) => `${name}: ${(percent * 100).toFixed(0)}%`}
-        >
-          {chartData.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-          ))}
-        </Pie>
-        <Tooltip formatter={(value) => `€${value.toFixed(2)}`} />
-        <Legend />
-      </PieChart>
-    </ResponsiveContainer>
-  );
+  const renderPieChart = () => {
+    const pieData = chartData.reduce((acc, item) => {
+      Object.entries(item).forEach(([key, value]) => {
+        if (key !== '_id') {
+          if (!acc[key]) acc[key] = 0;
+          acc[key] += value;
+        }
+      });
+      return acc;
+    }, {});
 
-  const renderLineChart = () => (
-    <ResponsiveContainer width="100%" height={400}>
-      <LineChart data={chartData}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="_id" label={{ value: getXAxisLabel(), position: 'insideBottom', offset: -5 }} />
-        <YAxis label={{ value: 'Importo (€)', angle: -90, position: 'insideLeft' }} />
-        <Tooltip formatter={(value) => `€${value.toFixed(2)}`} />
-        <Legend />
-        {Object.keys(chartData[0] || {}).filter(key => key !== '_id').map((key, index) => (
-          <Line key={key} type="monotone" dataKey={key} stroke={COLORS[index % COLORS.length]} />
-        ))}
-      </LineChart>
-    </ResponsiveContainer>
-  );
+    const pieChartData = Object.entries(pieData).map(([name, value]) => ({ name, value }));
+
+    return (
+      <ResponsiveContainer width="100%" height={400}>
+        <PieChart>
+          <Pie
+            data={pieChartData}
+            dataKey="value"
+            nameKey="name"
+            cx="50%"
+            cy="50%"
+            outerRadius={150}
+            fill="#8884d8"
+            label={({name, percent}) => `${name}: ${(percent * 100).toFixed(0)}%`}
+          >
+            {pieChartData.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={COLORS[entry.name] || COLORS['Altro']} />
+            ))}
+          </Pie>
+          <Tooltip formatter={(value) => `€${value.toFixed(2)}`} />
+          <Legend />
+        </PieChart>
+      </ResponsiveContainer>
+    );
+  };
 
   if (!utente) {
     return <Alert variant="info">Caricamento dati utente...</Alert>;
@@ -143,7 +148,6 @@ const Analytics = () => {
               <option value="mensile">Mensile</option>
               <option value="trimestrale">Trimestrale</option>
               <option value="annuale">Annuale</option>
-              <option value="categoria">Per Categoria</option>
             </Form.Select>
           </Form.Group>
         </Col>
@@ -161,17 +165,7 @@ const Analytics = () => {
           <Card>
             <Card.Header>Grafico a Torta</Card.Header>
             <Card.Body>
-              {chartType === 'categoria' ? renderPieChart() : renderBarChart()}
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-      <Row>
-        <Col md={12}>
-          <Card>
-            <Card.Header>Grafico a Linee</Card.Header>
-            <Card.Body>
-              {chartType !== 'categoria' ? renderLineChart() : renderBarChart()}
+              {renderPieChart()}
             </Card.Body>
           </Card>
         </Col>
