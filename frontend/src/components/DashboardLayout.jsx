@@ -38,7 +38,7 @@ const DashboardLayout = () => {
   return (
     <div className="d-flex">
       <GuidedTour run={runTour} setRun={setRunTour} />
-      <div className={`sidebar-wrapper ${showSidebar ? 'd-block' : 'd-none d-md-block'}`} style={{ width: '250px', position: 'fixed', top: '56px', bottom: 0, left: 0, overflowY: 'auto', backgroundColor: '#343a40', zIndex: 1000 }}>
+      <div className={`sidebar-wrapper ${showSidebar ? 'd-block' : 'd-none d-md-block'}`} style={{ width: '250px', position: 'fixed', top: '56px', bottom: 0, left: 0, overflowY: 'auto', backgroundColor: '#212529', zIndex: 1000 }}>
         <Sidebar />
       </div>
       <div style={{ marginLeft: '250px', width: 'calc(100% - 250px)', paddingTop: '56px' }}>
