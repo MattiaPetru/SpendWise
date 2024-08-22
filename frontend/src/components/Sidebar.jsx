@@ -6,7 +6,7 @@ const Sidebar = () => {
   const location = useLocation();
 
   const linkStyle = {
-    color: '#333',
+    color: '#ffffff',
     padding: '0.75rem 1rem',
     textDecoration: 'none',
     display: 'block',
@@ -14,12 +14,12 @@ const Sidebar = () => {
 
   const activeLinkStyle = {
     ...linkStyle,
-    backgroundColor: '#e9ecef',
+    backgroundColor: '#1a1e21',
   };
 
   return (
     <div className="h-100 d-flex flex-column">
-      <h3 className="text-center py-4">SpendWise</h3>
+      <h3 className="text-center py-4 text-light">SpendWise</h3>
       <Nav className="flex-column">
         {[
           { path: '/dashboard', label: 'Dashboard', className: 'dashboard-overview' },
@@ -40,7 +40,7 @@ const Sidebar = () => {
           </Nav.Link>
         ))}
       </Nav>
-      <div className="mt-auto text-center p-3">
+      <div className="mt-auto text-center p-3 text-light">
         <small>&copy; 2024 SpendWise</small>
       </div>
     </div>
