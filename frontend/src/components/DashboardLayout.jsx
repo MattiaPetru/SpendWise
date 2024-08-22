@@ -39,10 +39,10 @@ const DashboardLayout = () => {
     <Container fluid className="p-0">
       <GuidedTour run={runTour} setRun={setRunTour} />
       <Row className="g-0">
-        <Col xs={12} md={3} lg={2} className={`sidebar-wrapper ${showSidebar ? 'd-block' : 'd-none d-md-block'}`} style={{ position: 'fixed', top: 0, bottom: 0, zIndex: 1000 }}>
+        <Col xs={12} md={3} lg={2} className={`sidebar-wrapper ${showSidebar ? 'd-block' : 'd-none d-md-block'}`} style={{ position: 'fixed', top: '56px', bottom: 0, zIndex: 1000, overflowY: 'auto' }}>
           <Sidebar />
         </Col>
-        <Col xs={12} md={{ span: 9, offset: 3 }} lg={{ span: 10, offset: 2 }} className="p-4">
+        <Col xs={12} md={{ span: 9, offset: 3 }} lg={{ span: 10, offset: 2 }} className="p-4" style={{ marginTop: '56px' }}>
           <Button 
             variant="primary" 
             className="d-md-none mb-3" 

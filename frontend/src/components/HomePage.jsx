@@ -20,8 +20,8 @@ const AnimatedSection = ({ children, direction }) => {
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, x: direction === 'left' ? -50 : 50 }}
-      animate={inView ? { opacity: 1, x: 0 } : {}}
+      initial={{ opacity: 0, y: direction === 'up' ? 50 : 0 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.5, delay: 0.2 }}
     >
       {children}
@@ -44,7 +44,7 @@ const HomePage = () => {
   };
 
   return (
-    <Container fluid>
+    <Container>
       <Row className="my-5">
         <Col>
           <h1 className="text-center mb-4">Benvenuto su SpendWise</h1>
@@ -54,37 +54,39 @@ const HomePage = () => {
         </Col>
       </Row>
 
-      <Row className="my-5">
-        <Col md={10} lg={8} className="mx-auto">
-          <h2 className="text-center mb-4">Cosa offre SpendWise?</h2>
-          <ul className="list-unstyled">
-            <li className="mb-4">
-              <h4>📊 Tracciamento delle Spese</h4>
-              <p>Registra facilmente ogni tua spesa, grande o piccola. Categorizza le tue uscite per avere una visione chiara di dove va il tuo denaro.</p>
-            </li>
-            <li className="mb-4">
-              <h4>📈 Analisi Dettagliate</h4>
-              <p>Visualizza grafici e report intuitivi che ti mostrano le tue abitudini di spesa nel tempo. Identifica facilmente le aree in cui puoi risparmiare.</p>
-            </li>
-            <li className="mb-4">
-              <h4>🎯 Gestione del Budget</h4>
-              <p>Imposta obiettivi di spesa per diverse categorie e monitora i tuoi progressi. SpendWise ti aiuta a rimanere in linea con i tuoi obiettivi finanziari.</p>
-            </li>
-            <li className="mb-4">
-              <h4>💡 Consigli Personalizzati</h4>
-              <p>Ricevi suggerimenti su misura basati sulle tue abitudini di spesa per migliorare la tua salute finanziaria.</p>
-            </li>
-            <li className="mb-4">
-              <h4>🔒 Sicurezza e Privacy</h4>
-              <p>I tuoi dati finanziari sono al sicuro con noi. Utilizziamo le più recenti tecnologie di crittografia per proteggere le tue informazioni.</p>
-            </li>
-          </ul>
-        </Col>
-      </Row>
+      <AnimatedSection direction="up">
+        <Row className="my-5">
+          <Col md={10} lg={8} className="mx-auto">
+            <h2 className="text-center mb-4">Cosa offre SpendWise?</h2>
+            <ul className="list-unstyled">
+              <li className="mb-4">
+                <h4>📊 Tracciamento delle Spese</h4>
+                <p>Registra facilmente ogni tua spesa, grande o piccola. Categorizza le tue uscite per avere una visione chiara di dove va il tuo denaro.</p>
+              </li>
+              <li className="mb-4">
+                <h4>📈 Analisi Dettagliate</h4>
+                <p>Visualizza grafici e report intuitivi che ti mostrano le tue abitudini di spesa nel tempo. Identifica facilmente le aree in cui puoi risparmiare.</p>
+              </li>
+              <li className="mb-4">
+                <h4>🎯 Gestione del Budget</h4>
+                <p>Imposta obiettivi di spesa per diverse categorie e monitora i tuoi progressi. SpendWise ti aiuta a rimanere in linea con i tuoi obiettivi finanziari.</p>
+              </li>
+              <li className="mb-4">
+                <h4>💡 Consigli Personalizzati</h4>
+                <p>Ricevi suggerimenti su misura basati sulle tue abitudini di spesa per migliorare la tua salute finanziaria.</p>
+              </li>
+              <li className="mb-4">
+                <h4>🔒 Sicurezza e Privacy</h4>
+                <p>I tuoi dati finanziari sono al sicuro con noi. Utilizziamo le più recenti tecnologie di crittografia per proteggere le tue informazioni.</p>
+              </li>
+            </ul>
+          </Col>
+        </Row>
+      </AnimatedSection>
 
       <Row className="my-5">
-        <Col lg={6} className="mb-4">
-          <AnimatedSection direction="left">
+        <Col md={6} className="mb-4">
+          <AnimatedSection direction="up">
             <Card>
               <Card.Header>Tendenze di Spesa</Card.Header>
               <Card.Body>
@@ -107,8 +109,8 @@ const HomePage = () => {
             </Card>
           </AnimatedSection>
         </Col>
-        <Col lg={6} className="mb-4">
-          <AnimatedSection direction="right">
+        <Col md={6} className="mb-4">
+          <AnimatedSection direction="up">
             <Card>
               <Card.Header>Inserisci Spesa</Card.Header>
               <Card.Body>

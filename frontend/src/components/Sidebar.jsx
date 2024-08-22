@@ -10,7 +10,8 @@ const Sidebar = () => {
     color: '#ffffff',
     height: '100%',
     padding: '1rem',
-    overflowY: 'auto',
+    display: 'flex',
+    flexDirection: 'column',
   };
 
   const linkStyle = {
@@ -28,28 +29,30 @@ const Sidebar = () => {
 
   return (
     <div style={sidebarStyle}>
-      <h3 className="text-light text-center mb-4">SpendWise</h3>
-      <Nav className="flex-column">
-        {[
-          { path: '/dashboard', label: 'Dashboard', className: 'dashboard-overview' },
-          { path: '/dashboard/add-expense', label: 'Aggiungi Spesa', className: 'add-expense-button' },
-          { path: '/dashboard/expenses', label: 'Visualizza Spese', className: 'view-expenses-link' },
-          { path: '/dashboard/analytics', label: 'Analisi', className: 'analytics-link' },
-          { path: '/dashboard/budget', label: 'Gestione Budget', className: 'budget-management-link' },
-          { path: '/dashboard/advice', label: 'Consigli Personalizzati', className: 'personalized-advice-link' },
-        ].map((item) => (
-          <Nav.Link
-            key={item.path}
-            as={Link}
-            to={item.path}
-            style={location.pathname === item.path ? activeLinkStyle : linkStyle}
-            className={`${item.className}`}
-          >
-            {item.label}
-          </Nav.Link>
-        ))}
-      </Nav>
-      <div className="text-center text-light mt-4">
+      <div>
+        <h3 className="text-light text-center mb-4">SpendWise</h3>
+        <Nav className="flex-column">
+          {[
+            { path: '/dashboard', label: 'Dashboard', className: 'dashboard-overview' },
+            { path: '/dashboard/add-expense', label: 'Aggiungi Spesa', className: 'add-expense-button' },
+            { path: '/dashboard/expenses', label: 'Visualizza Spese', className: 'view-expenses-link' },
+            { path: '/dashboard/analytics', label: 'Analisi', className: 'analytics-link' },
+            { path: '/dashboard/budget', label: 'Gestione Budget', className: 'budget-management-link' },
+            { path: '/dashboard/advice', label: 'Consigli Personalizzati', className: 'personalized-advice-link' },
+          ].map((item) => (
+            <Nav.Link
+              key={item.path}
+              as={Link}
+              to={item.path}
+              style={location.pathname === item.path ? activeLinkStyle : linkStyle}
+              className={`${item.className}`}
+            >
+              {item.label}
+            </Nav.Link>
+          ))}
+        </Nav>
+      </div>
+      <div className="mt-auto text-center text-light">
         <small>&copy; 2024 SpendWise</small>
       </div>
     </div>
