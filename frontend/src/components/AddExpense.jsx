@@ -13,13 +13,7 @@ const AddExpense = () => {
   const { utente } = useAuth();
 
   const categorie = [
-    'Cibo',
-    'Trasporti',
-    'Svago',
-    'Hobby',
-    'Spesa casa',
-    'Affitto',
-    'Spese ricorrenti'
+    'Cibo', 'Trasporti', 'Svago', 'Hobby', 'Spesa casa', 'Affitto', 'Spese ricorrenti'
   ];
 
   const handleSubmit = async (e) => {
@@ -64,7 +58,7 @@ const AddExpense = () => {
 
   return (
     <Container fluid>
-      <Row className="justify-content-md-center">
+      <Row className="justify-content-center">
         <Col xs={12} md={8} lg={6}>
           <h2 className="mb-4">Aggiungi una nuova spesa</h2>
           {error && <Alert variant="danger">{error}</Alert>}

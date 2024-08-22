@@ -18,6 +18,7 @@ const Analytics = () => {
   const [chartType, setChartType] = useState('mensile');
   const [chartData, setChartData] = useState([]);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
   const { utente } = useAuth();
 
   useEffect(() => {
@@ -28,23 +29,10 @@ const Analytics = () => {
 
   const fetchData = async () => {
     try {
+      setLoading(true);
       setError('');
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
-      let endpoint;
-      
-      switch(chartType) {
-        case 'mensile':
-          endpoint = '/api/spese/mensili-dettagliate';
-          break;
-        case 'trimestrale':
-          endpoint = '/api/spese/trimestrali';
-          break;
-        case 'annuale':
-          endpoint = '/api/spese/annuali';
-          break;
-        default:
-          endpoint = '/api/spese/mensili-dettagliate';
-      }
+      let endpoint = `/api/spese/${chartType}`;
 
       const response = await fetch(`${apiUrl}${endpoint}`, {
         headers: {
@@ -61,24 +49,22 @@ const Analytics = () => {
     } catch (error) {
       console.error('Errore nel caricamento dei dati:', error);
       setError('Si è verificato un errore nel caricamento dei dati. Riprova più tardi.');
+    } finally {
+      setLoading(false);
     }
   };
 
   const getXAxisLabel = () => {
     switch(chartType) {
-      case 'mensile':
-        return 'Mese';
-      case 'trimestrale':
-        return 'Trimestre';
-      case 'annuale':
-        return 'Anno';
-      default:
-        return '';
+      case 'mensile': return 'Mese';
+      case 'trimestrale': return 'Trimestre';
+      case 'annuale': return 'Anno';
+      default: return '';
     }
   };
 
   const renderBarChart = () => (
-    <ResponsiveContainer width="100%" height={400}>
+    <ResponsiveContainer width="100%" height={300}>
       <BarChart data={chartData}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="_id" label={{ value: getXAxisLabel(), position: 'insideBottom', offset: -5 }} />
@@ -106,7 +92,7 @@ const Analytics = () => {
     const pieChartData = Object.entries(pieData).map(([name, value]) => ({ name, value }));
 
     return (
-      <ResponsiveContainer width="100%" height={400}>
+      <ResponsiveContainer width="100%" height={300}>
         <PieChart>
           <Pie
             data={pieChartData}
@@ -114,7 +100,7 @@ const Analytics = () => {
             nameKey="name"
             cx="50%"
             cy="50%"
-            outerRadius={150}
+            outerRadius={100}
             fill="#8884d8"
             label={({name, percent}) => `${name}: ${(percent * 100).toFixed(0)}%`}
           >
@@ -129,14 +115,17 @@ const Analytics = () => {
     );
   };
 
-  if (!utente) {
-    return <Alert variant="info">Caricamento dati utente...</Alert>;
+  if (loading) {
+    return <Alert variant="info">Caricamento dati in corso...</Alert>;
+  }
+
+  if (error) {
+    return <Alert variant="danger">{error}</Alert>;
   }
 
   return (
     <Container fluid>
       <h2 className="mb-4">Analisi Spese</h2>
-      {error && <Alert variant="danger">{error}</Alert>}
       <Row className="mb-4">
         <Col xs={12} md={6} lg={4}>
           <Form.Group>

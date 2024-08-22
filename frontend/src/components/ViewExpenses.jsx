@@ -88,7 +88,7 @@ const ViewExpenses = () => {
       
       <Form className="mb-4">
         <Row>
-          <Col xs={12} sm={6} md={3} className="mb-3">
+          <Col xs={12} sm={6} md={4} lg={3} className="mb-3">
             <Form.Group>
               <Form.Label>Data</Form.Label>
               <Form.Control 
@@ -98,7 +98,7 @@ const ViewExpenses = () => {
               />
             </Form.Group>
           </Col>
-          <Col xs={12} sm={6} md={3} className="mb-3">
+          <Col xs={12} sm={6} md={4} lg={3} className="mb-3">
             <Form.Group>
               <Form.Label>Categoria</Form.Label>
               <Form.Select 
@@ -116,7 +116,7 @@ const ViewExpenses = () => {
               </Form.Select>
             </Form.Group>
           </Col>
-          <Col xs={12} sm={6} md={3} className="mb-3">
+          <Col xs={12} sm={6} md={4} lg={3} className="mb-3">
             <Form.Group>
               <Form.Label>Importo Min</Form.Label>
               <Form.Control 
@@ -126,7 +126,7 @@ const ViewExpenses = () => {
               />
             </Form.Group>
           </Col>
-          <Col xs={12} sm={6} md={3} className="mb-3">
+          <Col xs={12} sm={6} md={4} lg={3} className="mb-3">
             <Form.Group>
               <Form.Label>Importo Max</Form.Label>
               <Form.Control 
@@ -137,7 +137,7 @@ const ViewExpenses = () => {
             </Form.Group>
           </Col>
         </Row>
-        <Row className="mt-2">
+        <Row>
           <Col xs={12} md={6} className="mb-3">
             <Form.Group>
               <Form.Label>Descrizione</Form.Label>

@@ -36,38 +36,45 @@ const DashboardLayout = () => {
   };
 
   return (
-    <div className="d-flex">
+    <div className="d-flex flex-column flex-md-row">
       <GuidedTour run={runTour} setRun={setRunTour} />
       <div className={`sidebar-wrapper ${showSidebar ? 'd-block' : 'd-none d-md-block'}`} style={{ width: '250px', position: 'fixed', top: '56px', bottom: 0, left: 0, overflowY: 'auto', backgroundColor: '#212529', zIndex: 1000 }}>
         <Sidebar />
       </div>
-      <div style={{ marginLeft: '250px', width: 'calc(100% - 250px)', paddingTop: '56px' }}>
-        <Container fluid className="p-4">
-          <Button 
-            variant="primary" 
-            className="d-md-none mb-3" 
-            onClick={toggleSidebar}
-          >
-            {showSidebar ? 'Nascondi Menu' : 'Mostra Menu'}
-          </Button>
-          <Button 
-            variant="outline-primary" 
-            size="sm" 
-            onClick={handleStartTour}
-            className="mb-3 ms-2"
-          >
-            Riavvia Tour Guidato
-          </Button>
-          <div className="bg-white shadow-sm rounded p-4 dashboard-overview">
-            <Routes>
-              <Route path="/" element={<DashboardHome />} />
-              <Route path="/add-expense" element={<AddExpense />} />
-              <Route path="/expenses" element={<ViewExpenses />} />
-              <Route path="/analytics" element={<Analytics />} />
-              <Route path="/budget" element={<BudgetManagement />} />
-              <Route path="/advice" element={<PersonalizedAdvice />} />
-            </Routes>
-          </div>
+      <div style={{ marginLeft: 0, marginTop: '56px', width: '100%', transition: 'margin-left 0.3s' }} className="flex-grow-1 p-3 p-md-4">
+        <Container fluid>
+          <Row className="mb-3">
+            <Col>
+              <Button 
+                variant="primary" 
+                className="d-md-none me-2"
+                onClick={toggleSidebar}
+              >
+                {showSidebar ? 'Nascondi Menu' : 'Mostra Menu'}
+              </Button>
+              <Button 
+                variant="outline-primary" 
+                size="sm" 
+                onClick={handleStartTour}
+              >
+                Riavvia Tour Guidato
+              </Button>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <div className="bg-white shadow-sm rounded p-3 p-md-4">
+                <Routes>
+                  <Route path="/" element={<DashboardHome />} />
+                  <Route path="/add-expense" element={<AddExpense />} />
+                  <Route path="/expenses" element={<ViewExpenses />} />
+                  <Route path="/analytics" element={<Analytics />} />
+                  <Route path="/budget" element={<BudgetManagement />} />
+                  <Route path="/advice" element={<PersonalizedAdvice />} />
+                </Routes>
+              </div>
+            </Col>
+          </Row>
         </Container>
       </div>
     </div>

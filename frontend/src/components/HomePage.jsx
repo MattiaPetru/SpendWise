@@ -85,7 +85,7 @@ const HomePage = () => {
       </AnimatedSection>
 
       <Row className="my-5">
-        <Col md={6} className="mb-4">
+        <Col lg={6} className="mb-4">
           <AnimatedSection direction="up">
             <Card>
               <Card.Header>Tendenze di Spesa</Card.Header>
@@ -109,7 +109,7 @@ const HomePage = () => {
             </Card>
           </AnimatedSection>
         </Col>
-        <Col md={6} className="mb-4">
+        <Col lg={6} className="mb-4">
           <AnimatedSection direction="up">
             <Card>
               <Card.Header>Inserisci Spesa</Card.Header>

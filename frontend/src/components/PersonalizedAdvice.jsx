@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Card, ListGroup, Alert, Badge } from 'react-bootstrap';
+import { Container, Card, ListGroup, Alert, Badge, Spinner } from 'react-bootstrap';
 import { useAuth } from '../AuthContext';
 
 const PersonalizedAdvice = () => {
@@ -49,7 +49,13 @@ const PersonalizedAdvice = () => {
   };
 
   if (loading) {
-    return <Alert variant="info">Caricamento consigli in corso...</Alert>;
+    return (
+      <Container className="d-flex justify-content-center align-items-center" style={{height: '300px'}}>
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Caricamento...</span>
+        </Spinner>
+      </Container>
+    );
   }
 
   if (error) {
