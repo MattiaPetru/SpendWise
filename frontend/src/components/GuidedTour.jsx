@@ -7,7 +7,6 @@ const GuidedTour = ({ run, setRun }) => {
       target: '.dashboard-overview',
       content: 'Benvenuto in SpendWise! Questa è la tua dashboard principale dove puoi vedere un riepilogo delle tue finanze.',
       disableBeacon: true,
-      placement: 'center',
     },
     {
       target: '.add-expense-button',
