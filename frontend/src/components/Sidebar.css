@@ -1,11 +1,11 @@
 .sidebar {
   position: fixed;
-  top: 56px; /* Altezza della navbar */
+  top: 56px;
   left: 0;
   bottom: 0;
   width: 60px;
   background-color: #212529;
-  transition: all 0.3s ease;
+  transition: width 0.3s ease;
   overflow-x: hidden;
   z-index: 1020;
 }
@@ -89,4 +89,19 @@
 
 .react-joyride__spotlight {
   background-color: rgba(255, 255, 255, 0.1) !important;
+}
+.react-joyride__spotlight {
+  background-color: transparent !important;
+}
+
+.react-joyride__overlay {
+  pointer-events: none;
+}
+
+.sidebar .sidebar-item {
+  pointer-events: auto;
+}
+
+.sidebar-toggle {
+  pointer-events: auto;
 }

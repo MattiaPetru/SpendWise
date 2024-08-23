@@ -42,9 +42,13 @@ const GuidedTour = ({ run, setRun }) => {
   ];
 
   const handleJoyrideCallback = (data) => {
-    const { status, type } = data;
+    const { status, type, index } = data;
     if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status) || type === EVENTS.TOUR_END) {
       setRun(false);
+    }
+    // Forza la chiusura della sidebar dopo ogni step
+    if (type === EVENTS.STEP_AFTER && index > 0) {
+      document.querySelector('.sidebar').classList.remove('expanded');
     }
   };
 
@@ -56,16 +60,18 @@ const GuidedTour = ({ run, setRun }) => {
       showSkipButton={true}
       showProgress={true}
       disableOverlayClose={true}
-      disableOverlay={true}
-      spotlightClicks={true}
+      disableOverlay={false}
+      spotlightClicks={false}
+      floaterProps={{
+        disableAnimation: true,
+      }}
       styles={{
         options: {
           zIndex: 10000,
           primaryColor: '#007bff',
-          arrowColor: '#fff',
           backgroundColor: '#fff',
-          overlayColor: 'rgba(0, 0, 0, 0.0)',
-          textColor: '#000',
+          arrowColor: '#fff',
+          overlayColor: 'rgba(0, 0, 0, 0.5)',
         },
         tooltip: {
           fontSize: '14px',
