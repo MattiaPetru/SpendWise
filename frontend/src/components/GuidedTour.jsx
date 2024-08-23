@@ -1,57 +1,45 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Joyride, { STATUS, EVENTS } from 'react-joyride';
 
 const GuidedTour = ({ run, setRun }) => {
-  const [steps, setSteps] = useState([]);
-
-  useEffect(() => {
-    const updateSteps = () => {
-      const isDesktop = window.innerWidth > 1024;
-      const newSteps = [
-        {
-          target: '.sidebar',
-          content: isDesktop ? 'Questa è la barra laterale con le principali funzionalità.' : 'Clicca sull\'icona del menu per espandere la barra laterale.',
-          placement: 'right',
-          disableBeacon: true,
-        },
-        {
-          target: isDesktop ? '.dashboard-overview .sidebar-label' : '.dashboard-overview .sidebar-icon',
-          content: 'Qui trovi la panoramica della tua dashboard.',
-          placement: 'right',
-        },
-        {
-          target: isDesktop ? '.add-expense-button .sidebar-label' : '.add-expense-button .sidebar-icon',
-          content: 'Clicca qui per aggiungere una nuova spesa.',
-          placement: 'right',
-        },
-        {
-          target: isDesktop ? '.view-expenses-link .sidebar-label' : '.view-expenses-link .sidebar-icon',
-          content: 'Qui puoi visualizzare tutte le tue spese passate.',
-          placement: 'right',
-        },
-        {
-          target: isDesktop ? '.analytics-link .sidebar-label' : '.analytics-link .sidebar-icon',
-          content: 'Analizza le tue abitudini di spesa con grafici dettagliati.',
-          placement: 'right',
-        },
-        {
-          target: isDesktop ? '.budget-management-link .sidebar-label' : '.budget-management-link .sidebar-icon',
-          content: 'Gestisci i tuoi budget mensili per ogni categoria di spesa.',
-          placement: 'right',
-        },
-        {
-          target: isDesktop ? '.personalized-advice-link .sidebar-label' : '.personalized-advice-link .sidebar-icon',
-          content: 'Ricevi consigli personalizzati basati sulle tue abitudini di spesa.',
-          placement: 'right',
-        },
-      ];
-      setSteps(newSteps);
-    };
-
-    updateSteps();
-    window.addEventListener('resize', updateSteps);
-    return () => window.removeEventListener('resize', updateSteps);
-  }, []);
+  const steps = [
+    {
+      target: '.sidebar-toggle',
+      content: 'Questa è la barra laterale. Clicca qui per espanderla.',
+      placement: 'right',
+      disableBeacon: true,
+    },
+    {
+      target: '.dashboard-overview .sidebar-icon',
+      content: 'Qui trovi la panoramica della tua dashboard.',
+      placement: 'right',
+    },
+    {
+      target: '.add-expense-button .sidebar-icon',
+      content: 'Clicca qui per aggiungere una nuova spesa.',
+      placement: 'right',
+    },
+    {
+      target: '.view-expenses-link .sidebar-icon',
+      content: 'Qui puoi visualizzare tutte le tue spese passate.',
+      placement: 'right',
+    },
+    {
+      target: '.analytics-link .sidebar-icon',
+      content: 'Analizza le tue abitudini di spesa con grafici dettagliati.',
+      placement: 'right',
+    },
+    {
+      target: '.budget-management-link .sidebar-icon',
+      content: 'Gestisci i tuoi budget mensili per ogni categoria di spesa.',
+      placement: 'right',
+    },
+    {
+      target: '.personalized-advice-link .sidebar-icon',
+      content: 'Ricevi consigli personalizzati basati sulle tue abitudini di spesa.',
+      placement: 'right',
+    },
+  ];
 
   const handleJoyrideCallback = (data) => {
     const { status, type } = data;

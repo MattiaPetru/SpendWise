@@ -15,7 +15,7 @@
 }
 
 .sidebar-toggle {
-  display: none;
+  display: block;
   padding: 15px;
   color: #ffffff;
   cursor: pointer;
@@ -32,6 +32,7 @@
 }
 
 .sidebar-item:hover, .sidebar-item.active {
+  /* background-color: #1a1e21; */
   color: #fff;
 }
 
@@ -42,11 +43,48 @@
 }
 
 .sidebar-label {
+  opacity: 0;
   transition: opacity 0.3s ease;
+}
+
+.sidebar.expanded .sidebar-label {
+  opacity: 1;
+}
+
+body:not(.joyride-tour-active) .sidebar:hover {
+  width: 220px;
+}
+
+body:not(.joyride-tour-active) .sidebar:hover .sidebar-label {
+  opacity: 1;
+}
+
+.joyride-tour-active .sidebar {
+  width: 60px !important;
+}
+
+.joyride-tour-active .sidebar .sidebar-label {
+  opacity: 0 !important;
+}
+
+.joyride-tour-active .sidebar-icon {
+  margin-right: 0;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 50px;
+  }
+  
+  .sidebar.expanded {
+    width: 220px;
+  }
 }
 
 .react-joyride__spotlight {
   border-radius: 0 !important;
+  width: 60px !important;
+  left: 0 !important;
 }
 
 .react-joyride__overlay {
@@ -58,50 +96,8 @@
   pointer-events: auto;
 }
 
-/* Desktop styles */
-@media (min-width: 1025px) {
-  .sidebar {
-    width: 220px;
-  }
-
-  .sidebar-label {
-    opacity: 1;
-    pointer-events: auto;
-  }
-}
-
-/* Tablet and Mobile styles */
-@media (max-width: 1024px) {
-  .sidebar {
-    width: 60px;
-  }
-
-  .sidebar.expanded {
-    width: 220px;
-  }
-
-  .sidebar-toggle {
-    display: block;
-  }
-
-  .sidebar:not(.expanded) .sidebar-label {
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  .sidebar.expanded .sidebar-label {
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  .sidebar.tour-active:not(.expanded) .sidebar-label {
-    opacity: 0 !important;
-    pointer-events: none !important;
-  }
-}
-
-
-.sidebar.tour-active {
+/* Assicurati che la sidebar sia sempre visibile durante il tour */
+.joyride-tour-active .sidebar {
   visibility: visible !important;
   opacity: 1 !important;
 }
