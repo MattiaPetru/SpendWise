@@ -1,23 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Nav } from 'react-bootstrap';
 import { Link, useLocation } from 'react-router-dom';
 import { FaHome, FaPlus, FaList, FaChartBar, FaPiggyBank, FaLightbulb } from 'react-icons/fa';
+import './Sidebar.css'; // Assicurati di creare questo file CSS
 
 const Sidebar = () => {
   const location = useLocation();
-
-  const linkStyle = {
-    color: '#ffffff',
-    padding: '0.75rem 1rem',
-    textDecoration: 'none',
-    display: 'flex',
-    alignItems: 'center',
-  };
-
-  const activeLinkStyle = {
-    ...linkStyle,
-    backgroundColor: '#1a1e21',
-  };
+  const [expanded, setExpanded] = useState(false);
 
   const menuItems = [
     { path: '/dashboard', label: 'Dashboard', icon: FaHome, className: 'dashboard-overview' },
@@ -29,25 +18,24 @@ const Sidebar = () => {
   ];
 
   return (
-    <div className="d-flex flex-column h-100">
-      <h3 className="text-center py-4 text-light">SpendWise</h3>
+    <div 
+      className={`sidebar ${expanded ? 'expanded' : ''}`} 
+      onMouseEnter={() => setExpanded(true)} 
+      onMouseLeave={() => setExpanded(false)}
+    >
       <Nav className="flex-column">
         {menuItems.map((item) => (
           <Nav.Link
             key={item.path}
             as={Link}
             to={item.path}
-            style={location.pathname === item.path ? activeLinkStyle : linkStyle}
-            className={`${item.className} d-flex align-items-center`}
+            className={`sidebar-item ${location.pathname === item.path ? 'active' : ''} ${item.className}`}
           >
-            <item.icon className="me-2" />
-            <span>{item.label}</span>
+            <item.icon className="sidebar-icon" />
+            <span className="sidebar-label">{item.label}</span>
           </Nav.Link>
         ))}
       </Nav>
-      <div className="mt-auto text-center p-3 text-light">
-        <small>&copy; 2024 SpendWise</small>
-      </div>
     </div>
   );
 };
