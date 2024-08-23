@@ -20,7 +20,9 @@ const Sidebar = () => {
 
   const handleClick = (path) => {
     navigate(path);
-    setExpanded(false);
+    if (window.innerWidth <= 768) {
+      setExpanded(false);
+    }
   };
 
   const toggleExpanded = () => {
@@ -41,7 +43,9 @@ const Sidebar = () => {
   return (
     <div 
       className={`sidebar ${expanded ? 'expanded' : ''}`} 
-      onClick={toggleExpanded}
+      onMouseEnter={() => window.innerWidth > 768 && setExpanded(true)}
+      onMouseLeave={() => window.innerWidth > 768 && setExpanded(false)}
+      onClick={() => window.innerWidth <= 768 && toggleExpanded()}
     >
       <Nav className="flex-column">
         {menuItems.map((item) => (
