@@ -6,38 +6,38 @@ const GuidedTour = ({ run, setRun }) => {
     {
       target: '.sidebar',
       content: 'Questa è la barra laterale. Contiene le principali funzionalità dell\'app.',
-      placement: 'right',
+      placement: 'center',
       disableBeacon: true,
     },
     {
-      target: '.sidebar',
+      target: '.dashboard-overview',
       content: 'Da qui puoi accedere alla panoramica della tua dashboard.',
-      placement: 'right',
+      placement: 'bottom',
     },
     {
-      target: '.sidebar',
+      target: '.add-expense-button',
       content: 'Puoi aggiungere nuove spese.',
-      placement: 'right',
+      placement: 'bottom',
     },
     {
-      target: '.sidebar',
+      target: '.view-expenses-link',
       content: 'Visualizza tutte le tue spese passate.',
-      placement: 'right',
+      placement: 'bottom',
     },
     {
-      target: '.sidebar',
+      target: '.analytics-link',
       content: 'Analizza le tue abitudini di spesa con grafici dettagliati.',
-      placement: 'right',
+      placement: 'bottom',
     },
     {
-      target: '.sidebar',
+      target: '.budget-management-link',
       content: 'Gestisci i tuoi budget mensili per ogni categoria di spesa.',
-      placement: 'right',
+      placement: 'bottom',
     },
     {
-      target: '.sidebar',
+      target: '.personalized-advice-link',
       content: 'Ricevi consigli personalizzati basati sulle tue abitudini di spesa.',
-      placement: 'right',
+      placement: 'bottom',
     },
   ];
 
@@ -90,6 +90,9 @@ const GuidedTour = ({ run, setRun }) => {
         spotlight: {
           backgroundColor: 'transparent',
         },
+      }}
+      floaterProps={{
+        hideArrow: true,
       }}
       callback={handleJoyrideCallback}
     />
