@@ -60,8 +60,8 @@ const GuidedTour = ({ run, setRun }) => {
       showSkipButton={true}
       showProgress={true}
       disableOverlayClose={true}
-      disableOverlay={false}
-      spotlightClicks={false}
+      disableOverlay={true}
+      spotlightClicks={true}
       floaterProps={{
         disableAnimation: true,
       }}
@@ -71,7 +71,10 @@ const GuidedTour = ({ run, setRun }) => {
           primaryColor: '#007bff',
           backgroundColor: '#fff',
           arrowColor: '#fff',
-          overlayColor: 'rgba(0, 0, 0, 0.5)',
+          overlayColor: 'rgba(0, 0, 0, 0)',
+        },
+        spotlight: {
+          backgroundColor: 'transparent',
         },
         tooltip: {
           fontSize: '14px',

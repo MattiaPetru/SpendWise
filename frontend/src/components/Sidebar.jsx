@@ -5,9 +5,9 @@ import { FaHome, FaPlus, FaList, FaChartBar, FaPiggyBank, FaLightbulb, FaBars } 
 import './Sidebar.css';
 
 const Sidebar = () => {
+  const [expanded, setExpanded] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const [expanded, setExpanded] = useState(false);
 
   const menuItems = [
     { path: '/dashboard', label: 'Dashboard', icon: FaHome, className: 'dashboard-overview' },

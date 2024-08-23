@@ -23,17 +23,21 @@ const DashboardLayout = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (runTour) {
+      document.body.classList.add('joyride-tour-active');
+    } else {
+      document.body.classList.remove('joyride-tour-active');
+    }
+  }, [runTour]);
+
   const handleStartTour = () => {
     setRunTour(true);
   };
 
-  const handleEndTour = () => {
-    setRunTour(false);
-  };
-
   return (
     <div className="dashboard-layout">
-      <GuidedTour run={runTour} setRun={handleEndTour} />
+      <GuidedTour run={runTour} setRun={setRunTour} />
       <Sidebar />
       <div className="dashboard-content">
         <Container fluid className="py-3">
