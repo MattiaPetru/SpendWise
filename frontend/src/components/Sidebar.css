@@ -10,6 +10,7 @@
   z-index: 1020;
 }
 
+
 .sidebar.expanded {
   width: 220px;
 }
@@ -47,8 +48,30 @@
   transition: opacity 0.3s ease;
 }
 
+
 .expanded .sidebar-label {
   opacity: 1;
+}
+
+/* Aggiungi queste regole */
+body:not(.joyride-tour-active) .sidebar:hover {
+  width: 220px;
+}
+
+body:not(.joyride-tour-active) .sidebar:hover .sidebar-label {
+  opacity: 1;
+}
+
+.joyride-tour-active .sidebar {
+  width: 60px !important;
+}
+
+.joyride-tour-active .sidebar .sidebar-label {
+  opacity: 0 !important;
+}
+
+.joyride-tour-active .sidebar-icon {
+  margin-right: 0;
 }
 
 @media (min-width: 769px) {

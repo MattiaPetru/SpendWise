@@ -10,45 +10,41 @@ const GuidedTour = ({ run, setRun }) => {
       disableBeacon: true,
     },
     {
-      target: '.dashboard-overview',
+      target: '.dashboard-overview .sidebar-icon',
       content: 'Qui trovi la panoramica della tua dashboard.',
-      placement: 'bottom',
+      placement: 'right',
     },
     {
-      target: '.add-expense-button',
+      target: '.add-expense-button .sidebar-icon',
       content: 'Clicca qui per aggiungere una nuova spesa.',
       placement: 'right',
     },
     {
-      target: '.view-expenses-link',
+      target: '.view-expenses-link .sidebar-icon',
       content: 'Qui puoi visualizzare tutte le tue spese passate.',
       placement: 'right',
     },
     {
-      target: '.analytics-link',
+      target: '.analytics-link .sidebar-icon',
       content: 'Analizza le tue abitudini di spesa con grafici dettagliati.',
       placement: 'right',
     },
     {
-      target: '.budget-management-link',
+      target: '.budget-management-link .sidebar-icon',
       content: 'Gestisci i tuoi budget mensili per ogni categoria di spesa.',
       placement: 'right',
     },
     {
-      target: '.personalized-advice-link',
+      target: '.personalized-advice-link .sidebar-icon',
       content: 'Ricevi consigli personalizzati basati sulle tue abitudini di spesa.',
       placement: 'right',
     },
   ];
 
   const handleJoyrideCallback = (data) => {
-    const { status, type, index } = data;
+    const { status, type } = data;
     if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status) || type === EVENTS.TOUR_END) {
       setRun(false);
-    }
-    // Forza la chiusura della sidebar dopo ogni step
-    if (type === EVENTS.STEP_AFTER && index > 0) {
-      document.querySelector('.sidebar').classList.remove('expanded');
     }
   };
 
@@ -60,21 +56,15 @@ const GuidedTour = ({ run, setRun }) => {
       showSkipButton={true}
       showProgress={true}
       disableOverlayClose={true}
-      disableOverlay={true}
-      spotlightClicks={true}
-      floaterProps={{
-        disableAnimation: true,
-      }}
+      disableOverlay={false}
+      spotlightClicks={false}
       styles={{
         options: {
           zIndex: 10000,
           primaryColor: '#007bff',
           backgroundColor: '#fff',
           arrowColor: '#fff',
-          overlayColor: 'rgba(0, 0, 0, 0)',
-        },
-        spotlight: {
-          backgroundColor: 'transparent',
+          overlayColor: 'rgba(0, 0, 0, 0.5)',
         },
         tooltip: {
           fontSize: '14px',
@@ -96,6 +86,9 @@ const GuidedTour = ({ run, setRun }) => {
         buttonSkip: {
           color: '#6c757d',
           fontSize: '14px',
+        },
+        spotlight: {
+          backgroundColor: 'transparent',
         },
       }}
       callback={handleJoyrideCallback}
