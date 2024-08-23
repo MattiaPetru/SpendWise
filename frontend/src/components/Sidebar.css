@@ -15,7 +15,7 @@
 }
 
 .sidebar-toggle {
-  display: none;
+  display: block;
   padding: 15px;
   color: #ffffff;
   cursor: pointer;
@@ -79,16 +79,10 @@ body:not(.joyride-tour-active) .sidebar:hover .sidebar-label {
   .sidebar.expanded {
     width: 220px;
   }
-
-  .sidebar-toggle {
-    display: block;
-  }
 }
 
 .react-joyride__spotlight {
-  width: 40px !important;
-  height: 40px !important;
-  border-radius: 50% !important;
+  border-radius: 4px !important;
 }
 
 .react-joyride__overlay {
@@ -98,4 +92,12 @@ body:not(.joyride-tour-active) .sidebar:hover .sidebar-label {
 .sidebar .sidebar-item,
 .sidebar-toggle {
   pointer-events: auto;
+}
+
+/* Assicurati che gli elementi della sidebar siano sempre visibili durante il tour */
+.joyride-tour-active .sidebar,
+.joyride-tour-active .sidebar-item,
+.joyride-tour-active .sidebar-icon {
+  visibility: visible !important;
+  opacity: 1 !important;
 }
