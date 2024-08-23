@@ -14,6 +14,7 @@ import Analytics from './components/Analytics';
 import BudgetManagement from './components/BudgetManagement';
 import PersonalizedAdvice from './components/PersonalizedAdvice';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './App.css';
 
 const App = () => {
   return (

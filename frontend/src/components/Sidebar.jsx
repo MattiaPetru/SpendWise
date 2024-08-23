@@ -25,7 +25,8 @@ const Sidebar = () => {
     }
   };
 
-  const toggleExpanded = () => {
+  const toggleExpanded = (e) => {
+    e.stopPropagation();
     setExpanded(!expanded);
   };
 
@@ -45,8 +46,10 @@ const Sidebar = () => {
       className={`sidebar ${expanded ? 'expanded' : ''}`} 
       onMouseEnter={() => window.innerWidth > 768 && setExpanded(true)}
       onMouseLeave={() => window.innerWidth > 768 && setExpanded(false)}
-      onClick={() => window.innerWidth <= 768 && toggleExpanded()}
     >
+      <div className="sidebar-toggle" onClick={toggleExpanded}>
+        <FaList />
+      </div>
       <Nav className="flex-column">
         {menuItems.map((item) => (
           <Nav.Link
