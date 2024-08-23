@@ -5,7 +5,7 @@ import { FaHome, FaPlus, FaList, FaChartBar, FaPiggyBank, FaLightbulb, FaBars } 
 import './Sidebar.css';
 
 const Sidebar = ({ isTourActive }) => {
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(window.innerWidth > 1024);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -20,27 +20,27 @@ const Sidebar = ({ isTourActive }) => {
 
   const handleClick = (path) => {
     navigate(path);
-    if (window.innerWidth <= 768) {
+    if (window.innerWidth <= 1024) {
       setExpanded(false);
     }
   };
 
-  const toggleExpanded = (e) => {
-    if (!isTourActive) {
-      e.stopPropagation();
-      setExpanded(!expanded);
-    }
+  const toggleExpanded = () => {
+    setExpanded(!expanded);
   };
 
   useEffect(() => {
-    setExpanded(false);
-  }, [location, isTourActive]);
+    const handleResize = () => {
+      setExpanded(window.innerWidth > 1024);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
     <div 
-      className={`sidebar ${expanded && !isTourActive ? 'expanded' : ''}`} 
-      onMouseEnter={() => !isTourActive && window.innerWidth > 768 && setExpanded(true)}
-      onMouseLeave={() => !isTourActive && window.innerWidth > 768 && setExpanded(false)}
+      className={`sidebar ${expanded ? 'expanded' : ''} ${isTourActive ? 'tour-active' : ''}`}
     >
       <div className="sidebar-toggle" onClick={toggleExpanded}>
         <FaBars />

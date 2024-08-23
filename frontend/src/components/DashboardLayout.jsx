@@ -23,14 +23,6 @@ const DashboardLayout = () => {
     }
   }, []);
 
-  useEffect(() => {
-    if (runTour) {
-      document.body.classList.add('joyride-tour-active');
-    } else {
-      document.body.classList.remove('joyride-tour-active');
-    }
-  }, [runTour]);
-
   const handleStartTour = () => {
     setRunTour(true);
   };
