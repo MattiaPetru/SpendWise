@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Nav } from 'react-bootstrap';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { FaHome, FaPlus, FaList, FaChartBar, FaPiggyBank, FaLightbulb } from 'react-icons/fa';
+import { FaHome, FaPlus, FaList, FaChartBar, FaPiggyBank, FaLightbulb, FaBars } from 'react-icons/fa';
 import './Sidebar.css';
 
 const Sidebar = () => {
@@ -48,14 +48,16 @@ const Sidebar = () => {
       onMouseLeave={() => window.innerWidth > 768 && setExpanded(false)}
     >
       <div className="sidebar-toggle" onClick={toggleExpanded}>
-        <FaList />
+        <FaBars />
       </div>
       <Nav className="flex-column">
         {menuItems.map((item) => (
           <Nav.Link
             key={item.path}
+            as={Link}
+            to={item.path}
             onClick={(e) => {
-              e.stopPropagation();
+              e.preventDefault();
               handleClick(item.path);
             }}
             className={`sidebar-item ${location.pathname === item.path ? 'active' : ''} ${item.className}`}
