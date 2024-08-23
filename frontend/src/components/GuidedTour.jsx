@@ -1,48 +1,49 @@
 import React from 'react';
-import Joyride, { STATUS } from 'react-joyride';
+import Joyride, { STATUS, EVENTS } from 'react-joyride';
 
 const GuidedTour = ({ run, setRun }) => {
   const steps = [
     {
       target: '.sidebar',
       content: 'Questa è la barra laterale. Su desktop, passa il mouse sopra per espanderla. Su mobile, clicca sull\'icona del menu per aprirla.',
-      placement: 'right',
+      placement: 'center',
+      disableBeacon: true,
     },
     {
       target: '.dashboard-overview',
       content: 'Qui trovi la panoramica della tua dashboard.',
-      placement: 'right',
+      placement: 'bottom',
     },
     {
       target: '.add-expense-button',
       content: 'Clicca qui per aggiungere una nuova spesa.',
-      placement: 'right',
+      placement: 'bottom',
     },
     {
       target: '.view-expenses-link',
       content: 'Qui puoi visualizzare tutte le tue spese passate.',
-      placement: 'right',
+      placement: 'bottom',
     },
     {
       target: '.analytics-link',
       content: 'Analizza le tue abitudini di spesa con grafici dettagliati.',
-      placement: 'right',
+      placement: 'bottom',
     },
     {
       target: '.budget-management-link',
       content: 'Gestisci i tuoi budget mensili per ogni categoria di spesa.',
-      placement: 'right',
+      placement: 'bottom',
     },
     {
       target: '.personalized-advice-link',
       content: 'Ricevi consigli personalizzati basati sulle tue abitudini di spesa.',
-      placement: 'right',
+      placement: 'bottom',
     },
   ];
 
   const handleJoyrideCallback = (data) => {
-    const { status } = data;
-    if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
+    const { status, type } = data;
+    if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status) || type === EVENTS.TOUR_END) {
       setRun(false);
     }
   };
@@ -54,6 +55,9 @@ const GuidedTour = ({ run, setRun }) => {
       continuous={true}
       showSkipButton={true}
       showProgress={true}
+      disableOverlayClose={true}
+      scrollToFirstStep={true}
+      scrollOffset={100}
       styles={{
         options: {
           zIndex: 10000,

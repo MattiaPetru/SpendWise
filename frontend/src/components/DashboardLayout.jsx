@@ -27,9 +27,13 @@ const DashboardLayout = () => {
     setRunTour(true);
   };
 
+  const handleEndTour = () => {
+    setRunTour(false);
+  };
+
   return (
     <div className="dashboard-layout">
-      <GuidedTour run={runTour} setRun={setRunTour} />
+      <GuidedTour run={runTour} setRun={handleEndTour} />
       <Sidebar />
       <div className="dashboard-content">
         <Container fluid className="py-3">
