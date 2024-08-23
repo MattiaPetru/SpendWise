@@ -3,7 +3,7 @@
   top: 56px;
   left: 0;
   bottom: 0;
-  width: 60px;
+  width: 60px; /* Larghezza base della sidebar */
   background-color: #212529;
   transition: width 0.3s ease;
   overflow-x: hidden;
@@ -59,8 +59,10 @@ body:not(.joyride-tour-active) .sidebar:hover .sidebar-label {
   opacity: 1;
 }
 
+/* Modifiche per la Guided Tour */
 .joyride-tour-active .sidebar {
-  width: 60px !important;
+  width: 60px; /* Mantieni la sidebar ridotta durante il tour */
+  transition: none; /* Disabilita le transizioni */
 }
 
 .joyride-tour-active .sidebar .sidebar-label {
