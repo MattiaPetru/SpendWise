@@ -4,40 +4,40 @@ import Joyride, { STATUS, EVENTS } from 'react-joyride';
 const GuidedTour = ({ run, setRun }) => {
   const steps = [
     {
-      target: '.sidebar',
-      content: 'Questa è la barra laterale. Contiene le principali funzionalità dell\'app.',
-      placement: 'center',
+      target: '.sidebar-toggle',
+      content: 'Questa è la barra laterale. Clicca qui per espanderla.',
+      placement: 'right',
       disableBeacon: true,
     },
     {
-      target: '.dashboard-overview',
-      content: 'Da qui puoi accedere alla panoramica della tua dashboard.',
-      placement: 'bottom',
+      target: '.dashboard-overview .sidebar-icon',
+      content: 'Qui trovi la panoramica della tua dashboard.',
+      placement: 'right',
     },
     {
-      target: '.add-expense-button',
-      content: 'Puoi aggiungere nuove spese.',
-      placement: 'bottom',
+      target: '.add-expense-button .sidebar-icon',
+      content: 'Clicca qui per aggiungere una nuova spesa.',
+      placement: 'right',
     },
     {
-      target: '.view-expenses-link',
-      content: 'Visualizza tutte le tue spese passate.',
-      placement: 'bottom',
+      target: '.view-expenses-link .sidebar-icon',
+      content: 'Qui puoi visualizzare tutte le tue spese passate.',
+      placement: 'right',
     },
     {
-      target: '.analytics-link',
+      target: '.analytics-link .sidebar-icon',
       content: 'Analizza le tue abitudini di spesa con grafici dettagliati.',
-      placement: 'bottom',
+      placement: 'right',
     },
     {
-      target: '.budget-management-link',
+      target: '.budget-management-link .sidebar-icon',
       content: 'Gestisci i tuoi budget mensili per ogni categoria di spesa.',
-      placement: 'bottom',
+      placement: 'right',
     },
     {
-      target: '.personalized-advice-link',
+      target: '.personalized-advice-link .sidebar-icon',
       content: 'Ricevi consigli personalizzati basati sulle tue abitudini di spesa.',
-      placement: 'bottom',
+      placement: 'right',
     },
   ];
 
@@ -90,9 +90,6 @@ const GuidedTour = ({ run, setRun }) => {
         spotlight: {
           backgroundColor: 'transparent',
         },
-      }}
-      floaterProps={{
-        hideArrow: true,
       }}
       callback={handleJoyrideCallback}
     />

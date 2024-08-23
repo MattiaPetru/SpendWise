@@ -32,8 +32,8 @@
 }
 
 .sidebar-item:hover, .sidebar-item.active {
-  background-color: #1a1e21;
-  color: #ffffff;
+  /* background-color: #1a1e21; */ /* Commentato come richiesto */
+  color: #fff;
 }
 
 .sidebar-icon {
@@ -79,24 +79,12 @@ body:not(.joyride-tour-active) .sidebar:hover .sidebar-label {
   .sidebar.expanded {
     width: 220px;
   }
+}
 
-  .react-joyride__tooltip {
-    width: 90% !important;
-    max-width: 300px !important;
-    margin: 0 auto !important;
-  }
-
-  .react-joyride__spotlight {
-    display: none !important;
-  }
-
-  .react-joyride__overlay {
-    display: none !important;
-  }
-
-  .joyride-tour-active .sidebar {
-    z-index: 10001 !important;
-  }
+.react-joyride__spotlight {
+  border-radius: 0 !important;
+  width: 60px !important;
+  left: 0 !important;
 }
 
 .react-joyride__overlay {
