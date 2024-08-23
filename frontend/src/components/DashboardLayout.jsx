@@ -14,6 +14,7 @@ import './DashboardLayout.css';
 const DashboardLayout = () => {
   const [runTour, setRunTour] = useState(false);
   const location = useLocation();
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth > 1024);
 
   useEffect(() => {
     const hasSeenTour = localStorage.getItem('hasSeenTour');
@@ -21,6 +22,16 @@ const DashboardLayout = () => {
       setRunTour(true);
       localStorage.setItem('hasSeenTour', 'true');
     }
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsDesktop(window.innerWidth > 1024);
+    };
+
+    window.addEventListener('resize', handleResize);
+    handleResize(); // Call once to set initial state
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   useEffect(() => {
@@ -36,7 +47,7 @@ const DashboardLayout = () => {
   };
 
   return (
-    <div className="dashboard-layout">
+    <div className={`dashboard-layout ${isDesktop ? 'desktop' : 'mobile'}`}>
       <GuidedTour run={runTour} setRun={setRunTour} />
       <Sidebar />
       <div className="dashboard-content">

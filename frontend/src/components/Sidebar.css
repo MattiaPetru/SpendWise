@@ -1,25 +1,51 @@
 .sidebar {
+  background-color: #212529;
+  transition: all 0.3s ease;
+  overflow-x: hidden;
+  z-index: 1020;
+}
+
+.sidebar.desktop {
   position: fixed;
   top: 56px;
   left: 0;
   bottom: 0;
   width: 60px;
-  background-color: #212529;
-  transition: width 0.3s ease;
-  overflow-x: hidden;
-  z-index: 1020;
 }
 
-.sidebar.expanded {
+.sidebar.desktop.expanded {
   width: 220px;
 }
 
+.sidebar.mobile {
+  position: fixed;
+  top: 56px;
+  left: 0;
+  right: 0;
+  height: 60px;
+  display: flex;
+  align-items: center;
+}
+
+.sidebar.mobile.expanded {
+  height: auto;
+  max-height: calc(100vh - 56px);
+  overflow-y: auto;
+}
+
 .sidebar-toggle {
-  display: block;
+  display: none;
   padding: 15px;
   color: #ffffff;
   cursor: pointer;
   text-align: center;
+}
+
+.sidebar.mobile .sidebar-toggle {
+  display: block;
+  position: absolute;
+  right: 10px;
+  top: 10px;
 }
 
 .sidebar-item {
@@ -32,7 +58,6 @@
 }
 
 .sidebar-item:hover, .sidebar-item.active {
-  /* background-color: #1a1e21; */
   color: #fff;
 }
 
@@ -42,49 +67,43 @@
   margin-right: 10px;
 }
 
-.sidebar-label {
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.sidebar.expanded .sidebar-label {
-  opacity: 1;
-}
-
-body:not(.joyride-tour-active) .sidebar:hover {
-  width: 220px;
-}
-
-body:not(.joyride-tour-active) .sidebar:hover .sidebar-label {
-  opacity: 1;
-}
-
-.joyride-tour-active .sidebar {
-  width: 60px !important;
-}
-
-.joyride-tour-active .sidebar .sidebar-label {
-  opacity: 0 !important;
-}
-
-.joyride-tour-active .sidebar-icon {
+.sidebar.mobile .sidebar-icon {
   margin-right: 0;
 }
 
-@media (max-width: 768px) {
-  .sidebar {
-    width: 50px;
+.sidebar-label {
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.sidebar.desktop:not(.expanded) .sidebar-label {
+  opacity: 0;
+}
+
+.sidebar.mobile:not(.expanded) .sidebar-label {
+  display: none;
+}
+
+.sidebar.desktop:hover {
+  width: 220px;
+}
+
+.sidebar.desktop:hover .sidebar-label {
+  opacity: 1;
+}
+
+@media (max-width: 1024px) {
+  .sidebar.mobile .sidebar-item {
+    padding: 10px;
   }
   
-  .sidebar.expanded {
-    width: 220px;
+  .sidebar.mobile:not(.expanded) .sidebar-item {
+    justify-content: center;
   }
 }
 
 .react-joyride__spotlight {
   border-radius: 0 !important;
-  width: 60px !important;
-  left: 0 !important;
 }
 
 .react-joyride__overlay {

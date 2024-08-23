@@ -1,26 +1,37 @@
 .dashboard-layout {
   display: flex;
-  min-height: calc(100vh - 56px); /* Altezza totale meno l'altezza della navbar */
-  margin: 0; /* Rimuovi margini */
-  padding: 0; /* Rimuovi padding */
+  min-height: 100vh;
+}
+
+.dashboard-layout.desktop {
+  flex-direction: row;
+}
+
+.dashboard-layout.mobile {
+  flex-direction: column;
 }
 
 .dashboard-content {
   flex-grow: 1;
-  margin-left: 60px; /* Margine sinistro uguale alla larghezza della sidebar */
-  transition: margin-left 0.3s ease;
-  overflow-y: auto;
+  transition: margin 0.3s ease;
 }
 
-/* Gestione della dashboard durante la guided tour */
-.joyride-tour-active .dashboard-content {
-  margin-left: 60px; /* Mantieni il margine */
-  transition: none; /* Nessuna transizione per evitare scatti */
-  overflow-y: auto; /* Evita overflow non voluti */
+.dashboard-layout.desktop .dashboard-content {
+  margin-left: 60px;
+  margin-top: 56px;
 }
 
-@media (max-width: 767px) {
-  .dashboard-content {
-    margin-left: 50px;
+.dashboard-layout.desktop .sidebar.expanded ~ .dashboard-content {
+  margin-left: 220px;
+}
+
+.dashboard-layout.mobile .dashboard-content {
+  margin-left: 0;
+  margin-top: 116px; /* 56px (navbar) + 60px (sidebar) */
+}
+
+@media (max-width: 1024px) {
+  .dashboard-layout.mobile .dashboard-content {
+    width: 100%;
   }
 }

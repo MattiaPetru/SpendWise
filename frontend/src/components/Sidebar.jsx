@@ -8,6 +8,7 @@ const Sidebar = () => {
   const [expanded, setExpanded] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth > 1024);
 
   const menuItems = [
     { path: '/dashboard', label: 'Dashboard', icon: FaHome, className: 'dashboard-overview' },
@@ -20,7 +21,7 @@ const Sidebar = () => {
 
   const handleClick = (path) => {
     navigate(path);
-    if (window.innerWidth <= 768) {
+    if (!isDesktop) {
       setExpanded(false);
     }
   };
@@ -32,25 +33,27 @@ const Sidebar = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth > 768) {
+      setIsDesktop(window.innerWidth > 1024);
+      if (window.innerWidth > 1024) {
+        setExpanded(true);
+      } else {
         setExpanded(false);
       }
     };
 
     window.addEventListener('resize', handleResize);
+    handleResize(); // Call once to set initial state
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   return (
-    <div 
-      className={`sidebar ${expanded ? 'expanded' : ''}`} 
-      onMouseEnter={() => window.innerWidth > 768 && setExpanded(true)}
-      onMouseLeave={() => window.innerWidth > 768 && setExpanded(false)}
-    >
-      <div className="sidebar-toggle" onClick={toggleExpanded}>
-        <FaBars />
-      </div>
-      <Nav className="flex-column">
+    <div className={`sidebar ${expanded ? 'expanded' : ''} ${isDesktop ? 'desktop' : 'mobile'}`}>
+      {!isDesktop && (
+        <div className="sidebar-toggle" onClick={toggleExpanded}>
+          <FaBars />
+        </div>
+      )}
+      <Nav className={isDesktop ? "flex-column" : "flex-row"}>
         {menuItems.map((item) => (
           <Nav.Link
             key={item.path}
@@ -63,7 +66,7 @@ const Sidebar = () => {
             className={`sidebar-item ${location.pathname === item.path ? 'active' : ''} ${item.className}`}
           >
             <item.icon className="sidebar-icon" />
-            <span className="sidebar-label">{item.label}</span>
+            {(isDesktop || expanded) && <span className="sidebar-label">{item.label}</span>}
           </Nav.Link>
         ))}
       </Nav>
