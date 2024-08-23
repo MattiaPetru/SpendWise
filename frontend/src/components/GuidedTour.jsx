@@ -4,8 +4,8 @@ import Joyride, { STATUS, EVENTS } from 'react-joyride';
 const GuidedTour = ({ run, setRun }) => {
   const steps = [
     {
-      target: '.sidebar',
-      content: 'Questa è la barra laterale. Su desktop, passa il mouse sopra per espanderla. Su mobile, clicca sull\'icona del menu per aprirla.',
+      target: '.sidebar-toggle',
+      content: 'Questa è la barra laterale. Clicca qui per espanderla.',
       placement: 'right',
       disableBeacon: true,
     },
@@ -56,15 +56,14 @@ const GuidedTour = ({ run, setRun }) => {
       showSkipButton={true}
       showProgress={true}
       disableOverlayClose={true}
-      disableOverlay={false}
-      spotlightClicks={false}
+      disableOverlay={true}
+      spotlightClicks={true}
       styles={{
         options: {
           zIndex: 10000,
           primaryColor: '#007bff',
           backgroundColor: '#fff',
           arrowColor: '#fff',
-          overlayColor: 'rgba(0, 0, 0, 0.5)',
         },
         tooltip: {
           fontSize: '14px',
