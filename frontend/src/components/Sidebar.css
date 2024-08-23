@@ -61,7 +61,6 @@ body:not(.joyride-tour-active) .sidebar:hover .sidebar-label {
 
 .joyride-tour-active .sidebar {
   width: 60px !important;
-  pointer-events: none;
 }
 
 .joyride-tour-active .sidebar .sidebar-label {
@@ -70,11 +69,6 @@ body:not(.joyride-tour-active) .sidebar:hover .sidebar-label {
 
 .joyride-tour-active .sidebar-icon {
   margin-right: 0;
-}
-
-.joyride-tour-active .sidebar-item,
-.joyride-tour-active .sidebar-toggle {
-  pointer-events: auto;
 }
 
 @media (max-width: 768px) {
@@ -92,9 +86,16 @@ body:not(.joyride-tour-active) .sidebar:hover .sidebar-label {
 }
 
 .react-joyride__spotlight {
-  display: none !important;
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
 }
 
 .react-joyride__overlay {
-  display: none !important;
+  pointer-events: none;
+}
+
+.sidebar .sidebar-item,
+.sidebar-toggle {
+  pointer-events: auto;
 }

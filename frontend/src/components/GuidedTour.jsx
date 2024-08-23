@@ -56,14 +56,15 @@ const GuidedTour = ({ run, setRun }) => {
       showSkipButton={true}
       showProgress={true}
       disableOverlayClose={true}
-      disableOverlay={true}
-      spotlightClicks={true}
+      disableOverlay={false}
+      spotlightClicks={false}
       styles={{
         options: {
           zIndex: 10000,
           primaryColor: '#007bff',
           backgroundColor: '#fff',
           arrowColor: '#fff',
+          overlayColor: 'rgba(0, 0, 0, 0.5)',
         },
         tooltip: {
           fontSize: '14px',
