@@ -1,6 +1,8 @@
-dashboard-layout {
+.dashboard-layout {
   display: flex;
   min-height: calc(100vh - 56px); /* Altezza totale meno l'altezza della navbar */
+  margin: 0; /* Elimina margini */
+  padding: 0; /* Elimina padding */
 }
 
 .dashboard-content {
@@ -12,8 +14,9 @@ dashboard-layout {
 
 /* Modifica per la Guided Tour */
 .joyride-tour-active .dashboard-content {
-  margin-left: 60px; /* Mantieni l'allineamento durante il tour */
-  transition: none; /* Disabilita le transizioni per evitare scatti */
+  margin-left: 60px;
+  transition: none;
+  overflow-y: hidden; /* Evita di creare sezioni bianche in basso */
 }
 
 @media (max-width: 767px) {

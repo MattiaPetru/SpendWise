@@ -3,7 +3,7 @@
   top: 56px;
   left: 0;
   bottom: 0;
-  width: 60px; /* Larghezza base della sidebar */
+  width: 60px;
   background-color: #212529;
   transition: width 0.3s ease;
   overflow-x: hidden;
@@ -36,6 +36,12 @@
   color: #ffffff;
 }
 
+/* Modifiche per evitare la creazione di sezioni nere */
+.joyride-tour-active .sidebar-item {
+  background-color: #212529 !important; /* Assicura che il background rimanga invariato */
+  color: #ffffff !important;
+}
+
 .sidebar-icon {
   font-size: 1.2rem;
   min-width: 30px;
@@ -61,8 +67,8 @@ body:not(.joyride-tour-active) .sidebar:hover .sidebar-label {
 
 /* Modifiche per la Guided Tour */
 .joyride-tour-active .sidebar {
-  width: 60px; /* Mantieni la sidebar ridotta durante il tour */
-  transition: none; /* Disabilita le transizioni */
+  width: 60px;
+  transition: none;
 }
 
 .joyride-tour-active .sidebar .sidebar-label {
