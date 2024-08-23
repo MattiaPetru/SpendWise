@@ -32,7 +32,7 @@
 }
 
 .sidebar-item:hover, .sidebar-item.active {
-  /* background-color: #1a1e21; */ /* Commentato come richiesto */
+  /* background-color: #1a1e21; */
   color: #fff;
 }
 
@@ -43,12 +43,12 @@
 }
 
 .sidebar-label {
-  opacity: 0;
   transition: opacity 0.3s ease;
+  pointer-events: none;
 }
 
 .sidebar.expanded .sidebar-label {
-  opacity: 1;
+  pointer-events: auto;
 }
 
 body:not(.joyride-tour-active) .sidebar:hover {
@@ -56,15 +56,11 @@ body:not(.joyride-tour-active) .sidebar:hover {
 }
 
 body:not(.joyride-tour-active) .sidebar:hover .sidebar-label {
-  opacity: 1;
+  pointer-events: auto;
 }
 
 .joyride-tour-active .sidebar {
   width: 60px !important;
-}
-
-.joyride-tour-active .sidebar .sidebar-label {
-  opacity: 0 !important;
 }
 
 .joyride-tour-active .sidebar-icon {
@@ -100,4 +96,15 @@ body:not(.joyride-tour-active) .sidebar:hover .sidebar-label {
 .joyride-tour-active .sidebar {
   visibility: visible !important;
   opacity: 1 !important;
+}
+
+/* Mantieni le etichette non visibili ma non cliccabili quando la sidebar è chiusa */
+.sidebar:not(.expanded) .sidebar-label {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Rendi le etichette cliccabili solo quando la sidebar è espansa */
+.sidebar.expanded .sidebar-label {
+  pointer-events: auto;
 }
