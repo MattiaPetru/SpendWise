@@ -78,3 +78,15 @@
     opacity: 1;
   }
 }
+
+.sidebar {
+  pointer-events: auto !important;
+}
+
+.sidebar * {
+  pointer-events: auto !important;
+}
+
+.react-joyride__spotlight {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}

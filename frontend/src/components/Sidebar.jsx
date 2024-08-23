@@ -47,17 +47,21 @@ const Sidebar = () => {
       onMouseEnter={() => window.innerWidth > 768 && setExpanded(true)}
       onMouseLeave={() => window.innerWidth > 768 && setExpanded(false)}
     >
-      <div className="sidebar-toggle" onClick={toggleExpanded}>
+      <div className="sidebar-toggle" onClick={(e) => {
+        e.stopPropagation();
+        toggleExpanded();
+      }}>
         <FaBars />
       </div>
       <Nav className="flex-column">
-        {menuItems.map((item) => (
+        {menuItems.map((item, index) => (
           <Nav.Link
             key={item.path}
             as={Link}
             to={item.path}
             onClick={(e) => {
               e.preventDefault();
+              e.stopPropagation();
               handleClick(item.path);
             }}
             className={`sidebar-item ${location.pathname === item.path ? 'active' : ''} ${item.className}`}

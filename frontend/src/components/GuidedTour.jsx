@@ -6,7 +6,7 @@ const GuidedTour = ({ run, setRun }) => {
     {
       target: '.sidebar',
       content: 'Questa è la barra laterale. Su desktop, passa il mouse sopra per espanderla. Su mobile, clicca sull\'icona del menu per aprirla.',
-      placement: 'center',
+      placement: 'right',
       disableBeacon: true,
     },
     {
@@ -17,27 +17,27 @@ const GuidedTour = ({ run, setRun }) => {
     {
       target: '.add-expense-button',
       content: 'Clicca qui per aggiungere una nuova spesa.',
-      placement: 'bottom',
+      placement: 'right',
     },
     {
       target: '.view-expenses-link',
       content: 'Qui puoi visualizzare tutte le tue spese passate.',
-      placement: 'bottom',
+      placement: 'right',
     },
     {
       target: '.analytics-link',
       content: 'Analizza le tue abitudini di spesa con grafici dettagliati.',
-      placement: 'bottom',
+      placement: 'right',
     },
     {
       target: '.budget-management-link',
       content: 'Gestisci i tuoi budget mensili per ogni categoria di spesa.',
-      placement: 'bottom',
+      placement: 'right',
     },
     {
       target: '.personalized-advice-link',
       content: 'Ricevi consigli personalizzati basati sulle tue abitudini di spesa.',
-      placement: 'bottom',
+      placement: 'right',
     },
   ];
 
@@ -56,12 +56,16 @@ const GuidedTour = ({ run, setRun }) => {
       showSkipButton={true}
       showProgress={true}
       disableOverlayClose={true}
-      scrollToFirstStep={true}
-      scrollOffset={100}
+      disableOverlay={true}
+      spotlightClicks={true}
       styles={{
         options: {
           zIndex: 10000,
           primaryColor: '#007bff',
+          arrowColor: '#fff',
+          backgroundColor: '#fff',
+          overlayColor: 'rgba(0, 0, 0, 0.0)',
+          textColor: '#000',
         },
         tooltip: {
           fontSize: '14px',
