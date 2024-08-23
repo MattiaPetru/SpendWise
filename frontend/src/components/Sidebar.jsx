@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Nav } from 'react-bootstrap';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FaHome, FaPlus, FaList, FaChartBar, FaPiggyBank, FaLightbulb } from 'react-icons/fa';
-import './Sidebar.css'; 
+import './Sidebar.css';
 
 const Sidebar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [expanded, setExpanded] = useState(false);
 
   const menuItems = [
@@ -16,11 +17,14 @@ const Sidebar = () => {
     { path: '/dashboard/budget', label: 'Gestione Budget', icon: FaPiggyBank, className: 'budget-management-link' },
     { path: '/dashboard/advice', label: 'Consigli Personalizzati', icon: FaLightbulb, className: 'personalized-advice-link' },
   ];
+
   const handleClick = (path) => {
     navigate(path);
-    if (window.innerWidth <= 768) {
-      setExpanded(false);
-    }
+    setExpanded(false);
+  };
+
+  const toggleExpanded = () => {
+    setExpanded(!expanded);
   };
 
   useEffect(() => {
@@ -37,14 +41,16 @@ const Sidebar = () => {
   return (
     <div 
       className={`sidebar ${expanded ? 'expanded' : ''}`} 
-      onMouseEnter={() => setExpanded(true)} 
-      onMouseLeave={() => setExpanded(false)}
+      onClick={toggleExpanded}
     >
       <Nav className="flex-column">
         {menuItems.map((item) => (
           <Nav.Link
             key={item.path}
-            onClick={() => handleClick(item.path)}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleClick(item.path);
+            }}
             className={`sidebar-item ${location.pathname === item.path ? 'active' : ''} ${item.className}`}
           >
             <item.icon className="sidebar-icon" />

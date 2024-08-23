@@ -1,14 +1,13 @@
 .sidebar {
   position: fixed;
-  top: 0;
+  top: 56px; /* Altezza della navbar */
   left: 0;
   bottom: 0;
   width: 60px;
   background-color: #212529;
   transition: width 0.3s ease;
   overflow: hidden;
-  z-index: 1030; 
-  padding-top: 56px; 
+  z-index: 1020; 
 }
 
 .sidebar.expanded {
@@ -42,12 +41,12 @@
   opacity: 1;
 }
 
-@media (min-width: 768px) {
-  .sidebar:hover {
-    width: 200px;
+@media (max-width: 767px) {
+  .sidebar {
+    width: 50px;
   }
-
-  .sidebar:hover .sidebar-label {
-    opacity: 1;
+  
+  .sidebar.expanded {
+    width: 200px;
   }
 }
