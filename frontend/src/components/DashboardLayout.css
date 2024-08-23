@@ -1,8 +1,8 @@
 .dashboard-layout {
   display: flex;
   min-height: calc(100vh - 56px); /* Altezza totale meno l'altezza della navbar */
-  margin: 0; /* Elimina margini */
-  padding: 0; /* Elimina padding */
+  margin: 0; /* Rimuovi margini */
+  padding: 0; /* Rimuovi padding */
 }
 
 .dashboard-content {
@@ -12,11 +12,11 @@
   overflow-y: auto;
 }
 
-/* Modifica per la Guided Tour */
+/* Gestione della dashboard durante la guided tour */
 .joyride-tour-active .dashboard-content {
-  margin-left: 60px;
-  transition: none;
-  overflow-y: hidden; /* Evita di creare sezioni bianche in basso */
+  margin-left: 60px; /* Mantieni il margine */
+  transition: none; /* Nessuna transizione per evitare scatti */
+  overflow-y: auto; /* Evita overflow non voluti */
 }
 
 @media (max-width: 767px) {
