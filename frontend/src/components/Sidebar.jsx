@@ -4,7 +4,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FaHome, FaPlus, FaList, FaChartBar, FaPiggyBank, FaLightbulb, FaBars } from 'react-icons/fa';
 import './Sidebar.css';
 
-const Sidebar = () => {
+const Sidebar = ({ isTourActive }) => {
   const [expanded, setExpanded] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
@@ -26,31 +26,21 @@ const Sidebar = () => {
   };
 
   const toggleExpanded = (e) => {
-    e.stopPropagation();
-    setExpanded(!expanded);
+    if (!isTourActive) {
+      e.stopPropagation();
+      setExpanded(!expanded);
+    }
   };
 
   useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth > 768) {
-        setExpanded(false);
-      }
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  useEffect(() => {
-    // Chiudi la sidebar quando cambia la location
     setExpanded(false);
-  }, [location]);
+  }, [location, isTourActive]);
 
   return (
     <div 
-      className={`sidebar ${expanded ? 'expanded' : ''}`} 
-      onMouseEnter={() => window.innerWidth > 768 && setExpanded(true)}
-      onMouseLeave={() => window.innerWidth > 768 && setExpanded(false)}
+      className={`sidebar ${expanded && !isTourActive ? 'expanded' : ''}`} 
+      onMouseEnter={() => !isTourActive && window.innerWidth > 768 && setExpanded(true)}
+      onMouseLeave={() => !isTourActive && window.innerWidth > 768 && setExpanded(false)}
     >
       <div className="sidebar-toggle" onClick={toggleExpanded}>
         <FaBars />

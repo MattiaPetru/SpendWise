@@ -1,6 +1,7 @@
 .sidebar {
   position: fixed;
-  top: 56px; 
+  top: 56px;
+  left: 0;
   bottom: 0;
   width: 60px;
   background-color: #212529;
@@ -60,6 +61,7 @@ body:not(.joyride-tour-active) .sidebar:hover .sidebar-label {
 
 .joyride-tour-active .sidebar {
   width: 60px !important;
+  pointer-events: none;
 }
 
 .joyride-tour-active .sidebar .sidebar-label {
@@ -70,18 +72,9 @@ body:not(.joyride-tour-active) .sidebar:hover .sidebar-label {
   margin-right: 0;
 }
 
-.react-joyride__spotlight {
-  display: none !important;
-}
-
-@media (min-width: 769px) {
-  .sidebar:hover {
-    width: 220px;
-  }
-
-  .sidebar:hover .sidebar-label {
-    opacity: 1;
-  }
+.joyride-tour-active .sidebar-item,
+.joyride-tour-active .sidebar-toggle {
+  pointer-events: auto;
 }
 
 @media (max-width: 768px) {
@@ -96,19 +89,12 @@ body:not(.joyride-tour-active) .sidebar:hover .sidebar-label {
   .sidebar-toggle {
     display: block;
   }
-
-  .expanded .sidebar-label {
-    opacity: 1;
-  }
 }
 
-/* Assicurati che la sidebar e i suoi elementi rimangano cliccabili durante il tour */
-.sidebar .sidebar-item,
-.sidebar-toggle {
-  pointer-events: auto !important;
+.react-joyride__spotlight {
+  display: none !important;
 }
 
-/* Nascondi l'overlay di Joyride */
 .react-joyride__overlay {
   display: none !important;
 }

@@ -38,7 +38,7 @@ const DashboardLayout = () => {
   return (
     <div className="dashboard-layout">
       <GuidedTour run={runTour} setRun={setRunTour} />
-      <Sidebar />
+      <Sidebar isTourActive={runTour} />
       <div className="dashboard-content">
         <Container fluid className="py-3">
           <Button 
