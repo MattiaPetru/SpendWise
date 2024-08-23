@@ -3,7 +3,7 @@
   top: 56px;
   left: 0;
   bottom: 0;
-  width: 60px; /* Larghezza fissa quando non espansa */
+  width: 60px;
   background-color: #212529;
   transition: width 0.3s ease;
   overflow-x: hidden;
@@ -11,7 +11,7 @@
 }
 
 .sidebar.expanded {
-  width: 220px; /* Larghezza quando espansa */
+  width: 220px;
 }
 
 .sidebar-toggle {
@@ -29,11 +29,10 @@
   color: #ffffff;
   text-decoration: none;
   white-space: nowrap;
-  background-color: #212529; /* Colore di sfondo normale */
 }
 
 .sidebar-item:hover, .sidebar-item.active {
-  background-color: #1a1e21; /* Colore di sfondo al passaggio del mouse o quando attivo */
+  background-color: #1a1e21;
   color: #ffffff;
 }
 
@@ -60,23 +59,12 @@ body:not(.joyride-tour-active) .sidebar:hover .sidebar-label {
   opacity: 1;
 }
 
-/* Gestione della sidebar durante la guided tour */
 .joyride-tour-active .sidebar {
-  width: 60px; /* Forziamo la larghezza minima */
-  transition: none; /* Nessuna transizione durante il tour */
-}
-
-.joyride-tour-active .sidebar .sidebar-item {
-  background-color: #212529; /* Mantieni il colore di sfondo */
-  color: #ffffff;
-}
-
-.joyride-tour-active .sidebar-item.active {
-  background-color: #212529; /* Evita che l'elemento attivo cambi colore */
+  width: 60px !important;
 }
 
 .joyride-tour-active .sidebar .sidebar-label {
-  opacity: 0; /* Nascondi le etichette */
+  opacity: 0 !important;
 }
 
 .joyride-tour-active .sidebar-icon {
@@ -94,7 +82,9 @@ body:not(.joyride-tour-active) .sidebar:hover .sidebar-label {
 }
 
 .react-joyride__spotlight {
-  border-radius: 4px !important;
+  border-radius: 0 !important;
+  width: 60px !important;
+  left: 0 !important;
 }
 
 .react-joyride__overlay {
@@ -106,10 +96,8 @@ body:not(.joyride-tour-active) .sidebar:hover .sidebar-label {
   pointer-events: auto;
 }
 
-/* Assicurati che gli elementi della sidebar siano visibili e ripristinati dopo il tour */
-.joyride-tour-active .sidebar,
-.joyride-tour-active .sidebar-item,
-.joyride-tour-active .sidebar-icon {
-  visibility: visible;
-  opacity: 1;
+/* Assicurati che la sidebar sia sempre visibile durante il tour */
+.joyride-tour-active .sidebar {
+  visibility: visible !important;
+  opacity: 1 !important;
 }

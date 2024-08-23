@@ -1,94 +1,97 @@
-import React, { useState, useEffect } from 'react';
-import Joyride from 'react-joyride';
+import React from 'react';
+import Joyride, { STATUS, EVENTS } from 'react-joyride';
 
-const GuidedTour = () => {
-  const [isTourActive, setIsTourActive] = useState(false);
+const GuidedTour = ({ run, setRun }) => {
+  const steps = [
+    {
+      target: '.sidebar',
+      content: 'Questa è la barra laterale. Contiene le principali funzionalità dell\'app.',
+      placement: 'right',
+      disableBeacon: true,
+    },
+    {
+      target: '.sidebar',
+      content: 'Da qui puoi accedere alla panoramica della tua dashboard.',
+      placement: 'right',
+    },
+    {
+      target: '.sidebar',
+      content: 'Puoi aggiungere nuove spese.',
+      placement: 'right',
+    },
+    {
+      target: '.sidebar',
+      content: 'Visualizza tutte le tue spese passate.',
+      placement: 'right',
+    },
+    {
+      target: '.sidebar',
+      content: 'Analizza le tue abitudini di spesa con grafici dettagliati.',
+      placement: 'right',
+    },
+    {
+      target: '.sidebar',
+      content: 'Gestisci i tuoi budget mensili per ogni categoria di spesa.',
+      placement: 'right',
+    },
+    {
+      target: '.sidebar',
+      content: 'Ricevi consigli personalizzati basati sulle tue abitudini di spesa.',
+      placement: 'right',
+    },
+  ];
 
-  useEffect(() => {
-    if (isTourActive) {
-      // Aggiunge una classe al body per applicare stili specifici durante il tour
-      document.body.classList.add('joyride-tour-active');
-    } else {
-      // Rimuove la classe dal body quando il tour è terminato
-      document.body.classList.remove('joyride-tour-active');
+  const handleJoyrideCallback = (data) => {
+    const { status, type } = data;
+    if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status) || type === EVENTS.TOUR_END) {
+      setRun(false);
     }
-
-    return () => {
-      // Pulizia della classe quando il componente è smontato o il tour è terminato
-      document.body.classList.remove('joyride-tour-active');
-    };
-  }, [isTourActive]);
-
-  const handleTourStart = () => {
-    setIsTourActive(true);
-    // Disabilita l'espansione della sidebar all'inizio del tour
-    const sidebar = document.querySelector('.sidebar');
-    if (sidebar) {
-      sidebar.classList.remove('expanded');
-    }
-  };
-
-  const handleTourEnd = () => {
-    setIsTourActive(false);
-    // Se necessario, puoi ripristinare lo stato della sidebar qui
-    // const sidebar = document.querySelector('.sidebar');
-    // if (sidebar) {
-    //   sidebar.classList.add('expanded'); // Ripristina l'espansione se desiderato
-    // }
   };
 
   return (
     <Joyride
-      steps={[
-        {
-          target: '.dashboard-icon-1',
-          content: 'Questa è la prima icona. Qui puoi accedere alla dashboard principale.',
-        },
-        {
-          target: '.dashboard-icon-2',
-          content: 'Questa è la seconda icona. Utilizzala per vedere le statistiche.',
-        },
-        {
-          target: '.dashboard-icon-3',
-          content: 'Questa è la terza icona. Qui puoi accedere alle impostazioni.',
-        },
-        {
-          target: '.dashboard-icon-4',
-          content: 'Questa è la quarta icona. Usala per gestire i tuoi progetti.',
-        },
-        {
-          target: '.dashboard-icon-5',
-          content: 'Questa è la quinta icona. Ti porta alla sezione delle notifiche.',
-        },
-        {
-          target: '.dashboard-icon-6',
-          content: 'Questa è la sesta icona. Da qui puoi accedere ai report.',
-        },
-        {
-          target: '.sidebar-toggle',
-          content: 'Questo è il toggle della sidebar. Usalo per espandere o ridurre la sidebar.',
-        },
-        {
-          target: '.user-profile',
-          content: 'Questo è il tuo profilo utente. Clicca qui per vedere e modificare le tue informazioni.',
-        }
-      ]}
-      continuous
-      showProgress
-      showSkipButton
+      steps={steps}
+      run={run}
+      continuous={true}
+      showSkipButton={true}
+      showProgress={true}
+      disableOverlayClose={true}
+      disableOverlay={false}
+      spotlightClicks={false}
       styles={{
         options: {
-          zIndex: 10000, // Assicura che il tour sia sempre in primo piano
+          zIndex: 10000,
+          primaryColor: '#007bff',
+          backgroundColor: '#fff',
+          arrowColor: '#fff',
+          overlayColor: 'rgba(0, 0, 0, 0.5)',
+        },
+        tooltip: {
+          fontSize: '14px',
+          padding: '10px',
+        },
+        tooltipContainer: {
+          textAlign: 'left',
+        },
+        buttonNext: {
+          backgroundColor: '#007bff',
+          fontSize: '14px',
+          padding: '8px 15px',
+        },
+        buttonBack: {
+          color: '#007bff',
+          fontSize: '14px',
+          padding: '8px 15px',
+        },
+        buttonSkip: {
+          color: '#6c757d',
+          fontSize: '14px',
+        },
+        spotlight: {
+          backgroundColor: 'transparent',
         },
       }}
-      callback={(data) => {
-        const { status, type } = data;
-        if (type === 'tour:start') {
-          handleTourStart();
-        } else if (status === 'finished' || status === 'skipped') {
-          handleTourEnd();
-        }
-      }}
+      callback={handleJoyrideCallback}
     />
   );
 };
