@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Navbar, Nav, Container } from 'react-bootstrap';
+import { Navbar, Nav, Container, Offcanvas } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 
@@ -18,26 +18,35 @@ const NavbarComponent = () => {
   };
 
   return (
-    <Navbar bg="dark" variant="dark" expand="lg" className="mb-3">
+    <Navbar bg="dark" variant="dark" expand={false} className="mb-3">
       <Container fluid>
         <Navbar.Brand as={Link} to="/">SpendWise</Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="ms-auto">
-            <Nav.Link as={Link} to="/">Home</Nav.Link>
-            {isAuthenticated ? (
-              <>
-                <Nav.Link as={Link} to="/dashboard">Dashboard</Nav.Link>
-                <Nav.Link onClick={handleLogout}>Logout</Nav.Link>
-              </>
-            ) : (
-              <>
-                <Nav.Link as={Link} to="/login">Login</Nav.Link>
-                <Nav.Link as={Link} to="/register">Registrati</Nav.Link>
-              </>
-            )}
-          </Nav>
-        </Navbar.Collapse>
+        <Navbar.Toggle aria-controls="offcanvasNavbar" />
+        <Navbar.Offcanvas
+          id="offcanvasNavbar"
+          aria-labelledby="offcanvasNavbarLabel"
+          placement="end"
+        >
+          <Offcanvas.Header closeButton>
+            <Offcanvas.Title id="offcanvasNavbarLabel">Menu</Offcanvas.Title>
+          </Offcanvas.Header>
+          <Offcanvas.Body>
+            <Nav className="justify-content-end flex-grow-1 pe-3">
+              <Nav.Link as={Link} to="/">Home</Nav.Link>
+              {isAuthenticated ? (
+                <>
+                  <Nav.Link as={Link} to="/dashboard">Dashboard</Nav.Link>
+                  <Nav.Link onClick={handleLogout}>Logout</Nav.Link>
+                </>
+              ) : (
+                <>
+                  <Nav.Link as={Link} to="/login">Login</Nav.Link>
+                  <Nav.Link as={Link} to="/register">Registrati</Nav.Link>
+                </>
+              )}
+            </Nav>
+          </Offcanvas.Body>
+        </Navbar.Offcanvas>
       </Container>
     </Navbar>
   );

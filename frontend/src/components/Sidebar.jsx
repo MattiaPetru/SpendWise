@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Nav } from 'react-bootstrap';
 import { Link, useLocation } from 'react-router-dom';
 import { FaHome, FaPlus, FaList, FaChartBar, FaPiggyBank, FaLightbulb } from 'react-icons/fa';
-import './Sidebar.css'; // Assicurati di creare questo file CSS
+import './Sidebar.css'; 
 
 const Sidebar = () => {
   const location = useLocation();
@@ -16,6 +16,23 @@ const Sidebar = () => {
     { path: '/dashboard/budget', label: 'Gestione Budget', icon: FaPiggyBank, className: 'budget-management-link' },
     { path: '/dashboard/advice', label: 'Consigli Personalizzati', icon: FaLightbulb, className: 'personalized-advice-link' },
   ];
+  const handleClick = (path) => {
+    navigate(path);
+    if (window.innerWidth <= 768) {
+      setExpanded(false);
+    }
+  };
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 768) {
+        setExpanded(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
     <div 
@@ -27,8 +44,7 @@ const Sidebar = () => {
         {menuItems.map((item) => (
           <Nav.Link
             key={item.path}
-            as={Link}
-            to={item.path}
+            onClick={() => handleClick(item.path)}
             className={`sidebar-item ${location.pathname === item.path ? 'active' : ''} ${item.className}`}
           >
             <item.icon className="sidebar-icon" />

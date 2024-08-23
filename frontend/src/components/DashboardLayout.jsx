@@ -9,7 +9,7 @@ import Analytics from './Analytics';
 import BudgetManagement from './BudgetManagement';
 import PersonalizedAdvice from './PersonalizedAdvice';
 import GuidedTour from './GuidedTour';
-import './DashboardLayout.css'; // Assicurati di creare questo file CSS
+import './DashboardLayout.css'; 
 
 const DashboardLayout = () => {
   const [runTour, setRunTour] = useState(false);
