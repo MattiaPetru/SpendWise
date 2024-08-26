@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Form, Button, Table, Alert, ProgressBar } from 'react-bootstrap';
-import { FaTrash, FaEdit } from 'react-icons/fa';
+import { FaTrash } from 'react-icons/fa';
 import { useAuth } from '../AuthContext';
 
 const BudgetManagement = () => {
@@ -25,7 +25,7 @@ const BudgetManagement = () => {
   const fetchIncome = async () => {
     try {
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
-      const response = await fetch(`${apiUrl}/api/income`, {
+      const response = await fetch(`${apiUrl}/api/budgets/income`, {
         headers: {
           'Authorization': `Bearer ${utente.token}`
         }
@@ -65,19 +65,26 @@ const BudgetManagement = () => {
     setNewBudget(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleIncomeChange = async (e) => {
-    const newIncome = e.target.value;
-    setIncome(newIncome);
+  const handleIncomeChange = (e) => {
+    setIncome(e.target.value);
+  };
+
+  const handleIncomeSubmit = async (e) => {
+    e.preventDefault();
     try {
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
-      await fetch(`${apiUrl}/api/income`, {
+      const response = await fetch(`${apiUrl}/api/budgets/income`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${utente.token}`
         },
-        body: JSON.stringify({ income: newIncome })
+        body: JSON.stringify({ income })
       });
+      if (!response.ok) {
+        throw new Error('Errore nell\'aggiornamento dell\'entrata');
+      }
+      setSuccess('Entrata mensile aggiornata con successo!');
     } catch (error) {
       console.error('Errore nell\'aggiornamento dell\'entrata:', error);
       setError('Si è verificato un errore nell\'aggiornamento dell\'entrata. Riprova più tardi.');
@@ -146,16 +153,22 @@ const BudgetManagement = () => {
           <Card>
             <Card.Header>Entrata Mensile</Card.Header>
             <Card.Body>
-              <Form.Group>
-                <Form.Label>Importo Entrata Mensile</Form.Label>
-                <Form.Control
-                  type="number"
-                  value={income}
-                  onChange={handleIncomeChange}
-                  min="0"
-                  step="0.01"
-                />
-              </Form.Group>
+              <Form onSubmit={handleIncomeSubmit}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Importo Entrata Mensile</Form.Label>
+                  <Form.Control
+                    type="number"
+                    value={income}
+                    onChange={handleIncomeChange}
+                    min="0"
+                    step="0.01"
+                    required
+                  />
+                </Form.Group>
+                <Button variant="primary" type="submit">
+                  Aggiorna Entrata
+                </Button>
+              </Form>
             </Card.Body>
           </Card>
         </Col>

@@ -88,7 +88,7 @@ router.get('/income', async (req, res) => {
     res.json({ income: utente.income || 0 });
   } catch (error) {
     console.error('Errore nel recupero dell\'entrata:', error);
-    res.status(500).json({ messaggio: error.message });
+    res.status(500).json({ messaggio: 'Errore nel recupero dell\'entrata' });
   }
 });
 
@@ -105,7 +105,7 @@ router.post('/income', async (req, res) => {
     res.json({ messaggio: 'Entrata aggiornata con successo', income: utente.income });
   } catch (error) {
     console.error('Errore nell\'aggiornamento dell\'entrata:', error);
-    res.status(500).json({ messaggio: error.message });
+    res.status(500).json({ messaggio: 'Errore nell\'aggiornamento dell\'entrata' });
   }
 });
 
