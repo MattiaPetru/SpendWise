@@ -40,13 +40,20 @@ const BudgetManagement = () => {
   const fetchBudgets = useCallback(async () => {
     try {
       const response = await fetch(`${apiUrl}/api/budgets`, {
-        headers: { 'Authorization': `Bearer ${utente.token}` }
+        headers: { 
+          'Authorization': `Bearer ${utente.token}`,
+          'Content-Type': 'application/json'
+        }
       });
-      if (!response.ok) throw new Error('Errore nel caricamento dei budget');
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`Errore nel caricamento dei budget: ${errorData.messaggio || response.statusText}`);
+      }
       const data = await response.json();
       setBudgets(data);
       calculateTotalSpent(data.filter(budget => budget.mese === selectedMonth));
     } catch (error) {
+      console.error('Errore dettagliato:', error);
       setError('Errore nel caricamento dei budget: ' + error.message);
     }
   }, [apiUrl, utente.token, selectedMonth]);
