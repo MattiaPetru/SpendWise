@@ -183,7 +183,7 @@ const BudgetManagement = () => {
         </Col>
         <Col xs={12} lg={6} className="mb-4">
           <Card>
-            <Card.Header>Aggiungi Nuovo Budget per {selectedMonth}</Card.Header>
+            <Card.Header>Aggiungi Nuovo Budget per {new Date(selectedMonth).toLocaleString('it-IT', { month: 'long', year: 'numeric' })}</Card.Header>
             <Card.Body>
               <Form onSubmit={(e) => handleBudgetSubmit(e, newBudget)}>
                 <Form.Group className="mb-3">
@@ -234,12 +234,13 @@ const BudgetManagement = () => {
       <Row>
         <Col xs={12}>
           <Card>
-            <Card.Header>Budget per {selectedMonth}</Card.Header>
+            <Card.Header>Riepilogo Budget</Card.Header>
             <Card.Body>
               <div className="table-responsive">
                 <Table striped bordered hover>
                   <thead>
                     <tr>
+                      <th>Mese</th>
                       <th>Categoria</th>
                       <th>Budget</th>
                       <th>Periodo</th>
@@ -251,6 +252,7 @@ const BudgetManagement = () => {
                   <tbody>
                     {budgets.map((budget) => (
                       <tr key={budget._id}>
+                        <td>{new Date(budget.mese).toLocaleString('it-IT', { month: 'long', year: 'numeric' })}</td>
                         <td>{budget.categoria}</td>
                         <td>€{budget.importo.toFixed(2)}</td>
                         <td>{budget.periodo}</td>
@@ -284,7 +286,7 @@ const BudgetManagement = () => {
           </Card>
         </Col>
       </Row>
-
+  
       <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Modifica Budget</Modal.Title>
