@@ -6,7 +6,6 @@ import { useAuth } from '../AuthContext';
 const BudgetManagement = () => {
   const [incomes, setIncomes] = useState([]);
   const [selectedMonth, setSelectedMonth] = useState(new Date().toISOString().slice(0, 7));
-  const [selectedReviewMonth, setSelectedReviewMonth] = useState(new Date().toISOString().slice(0, 7));
   const [newIncome, setNewIncome] = useState(0);
   const [budgets, setBudgets] = useState([]);
   const [newBudget, setNewBudget] = useState({ categoria: '', importo: '', periodo: 'mensile' });
@@ -15,7 +14,6 @@ const BudgetManagement = () => {
   const [totalSpent, setTotalSpent] = useState(0);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingBudget, setEditingBudget] = useState(null);
-  const [monthlySpending, setMonthlySpending] = useState({});
   const { utente } = useAuth();
 
   const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
@@ -41,7 +39,7 @@ const BudgetManagement = () => {
 
   const fetchBudgets = useCallback(async () => {
     try {
-      const response = await fetch(`${apiUrl}/api/budgets?mese=${selectedReviewMonth}`, {
+      const response = await fetch(`${apiUrl}/api/budgets?mese=${selectedMonth}`, {
         headers: { 'Authorization': `Bearer ${utente.token}` }
       });
       if (!response.ok) throw new Error('Errore nel caricamento dei budget');
@@ -51,28 +49,14 @@ const BudgetManagement = () => {
     } catch (error) {
       setError('Errore nel caricamento dei budget: ' + error.message);
     }
-  }, [apiUrl, utente.token, selectedReviewMonth]);
-
-  const fetchMonthlySpending = useCallback(async () => {
-    try {
-      const response = await fetch(`${apiUrl}/api/spese/monthly-spending`, {
-        headers: { 'Authorization': `Bearer ${utente.token}` }
-      });
-      if (!response.ok) throw new Error('Errore nel caricamento delle spese mensili');
-      const data = await response.json();
-      setMonthlySpending(data);
-    } catch (error) {
-      setError('Errore nel caricamento delle spese mensili: ' + error.message);
-    }
-  }, [apiUrl, utente.token]);
+  }, [apiUrl, utente.token, selectedMonth]);
 
   useEffect(() => {
     if (utente && utente.token) {
       fetchIncomes();
       fetchBudgets();
-      fetchMonthlySpending();
     }
-  }, [utente, selectedMonth, fetchIncomes, fetchBudgets, fetchMonthlySpending]);
+  }, [utente, selectedMonth, fetchIncomes, fetchBudgets]);
 
   const calculateTotalSpent = (budgetsData) => {
     const total = budgetsData.reduce((acc, budget) => acc + (budget.speso || 0), 0);
@@ -141,7 +125,7 @@ const BudgetManagement = () => {
 
   const calculateProgress = (budget) => {
     const spentPercentage = (budget.speso / budget.importo) * 100;
-    return Math.min(spentPercentage, 100);
+    return spentPercentage;
   };
 
   return (
@@ -160,7 +144,11 @@ const BudgetManagement = () => {
                   <Form.Control
                     type="month"
                     value={selectedMonth}
-                    onChange={(e) => setSelectedMonth(e.target.value)}
+                    onChange={(e) => {
+                      setSelectedMonth(e.target.value);
+                      fetchIncomes();
+                      fetchBudgets();
+                    }}
                     required
                   />
                 </Form.Group>
@@ -182,14 +170,6 @@ const BudgetManagement = () => {
           <Card className="mt-4">
             <Card.Header>Riepilogo Spese</Card.Header>
             <Card.Body>
-              <Form.Group className="mb-3">
-                <Form.Label>Seleziona Mese per Riepilogo</Form.Label>
-                <Form.Control
-                  type="month"
-                  value={selectedReviewMonth}
-                  onChange={(e) => setSelectedReviewMonth(e.target.value)}
-                />
-              </Form.Group>
               <p>Entrata Mensile: €{newIncome.toFixed(2)}</p>
               <p>Totale Speso: €{totalSpent.toFixed(2)}</p>
               <p>Rimanente: €{(newIncome - totalSpent).toFixed(2)}</p>
@@ -198,27 +178,6 @@ const BudgetManagement = () => {
                 label={`${((totalSpent / newIncome) * 100).toFixed(2)}%`}
                 variant={(totalSpent / newIncome) > 1 ? "danger" : "success"}
               />
-            </Card.Body>
-          </Card>
-          <Card className="mt-4">
-            <Card.Header>Spese Mensili Precedenti</Card.Header>
-            <Card.Body>
-              <Table striped bordered hover>
-                <thead>
-                  <tr>
-                    <th>Mese</th>
-                    <th>Totale Speso</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {Object.entries(monthlySpending).map(([month, total]) => (
-                    <tr key={month}>
-                      <td>{month}</td>
-                      <td>€{total.toFixed(2)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
             </Card.Body>
           </Card>
         </Col>
@@ -275,7 +234,7 @@ const BudgetManagement = () => {
       <Row>
         <Col xs={12}>
           <Card>
-            <Card.Header>Budget per {selectedReviewMonth}</Card.Header>
+            <Card.Header>Budget per {selectedMonth}</Card.Header>
             <Card.Body>
               <div className="table-responsive">
                 <Table striped bordered hover>
@@ -302,6 +261,11 @@ const BudgetManagement = () => {
                             label={`${calculateProgress(budget).toFixed(2)}%`}
                             variant={calculateProgress(budget) > 100 ? "danger" : "primary"}
                           />
+                          {calculateProgress(budget) > 100 && (
+                            <small className="text-danger">
+                              Superato del {(calculateProgress(budget) - 100).toFixed(2)}%
+                            </small>
+                          )}
                         </td>
                         <td>
                           <Button variant="primary" size="sm" onClick={() => { setEditingBudget(budget); setShowEditModal(true); }} className="me-2">
