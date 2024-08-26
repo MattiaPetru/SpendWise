@@ -12,6 +12,10 @@ router.use(authMiddleware);
 router.get('/', async (req, res) => {
   try {
     const { mese } = req.query;
+    if (!mese) {
+      return res.status(400).json({ messaggio: 'Il parametro mese è obbligatorio' });
+    }
+
     const budgets = await Budget.find({ utente: req.user._id, mese });
 
     const budgetsWithSpending = await Promise.all(budgets.map(async (budget) => {
@@ -121,6 +125,7 @@ router.post('/income', async (req, res) => {
     res.status(500).json({ messaggio: error.message });
   }
 });
+
 // PUT /api/budgets/:id
 router.put('/:id', async (req, res) => {
   try {

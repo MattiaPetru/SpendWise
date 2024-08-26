@@ -39,13 +39,11 @@ const utenteSchema = new mongoose.Schema({
   collection: "utenti"
 });
 
-// Metodo pre-save per hashare la password
 utenteSchema.pre('save', async function (next) {
   if (this.isModified('password')) {
     try {
       const salt = await bcrypt.genSalt(10);
       this.password = await bcrypt.hash(this.password, salt);
-      console.log('Password hashata con successo durante il salvataggio');
     } catch (error) {
       console.error('Errore durante l\'hashing della password:', error);
       return next(error);
@@ -56,12 +54,7 @@ utenteSchema.pre('save', async function (next) {
 
 utenteSchema.methods.comparePassword = async function (candidatePassword) {
   try {
-    console.log('Confronto password per utente:', this.email);
-    console.log('Password candidata:', candidatePassword);
-    console.log('Password hashata nel database:', this.password);
-    const isMatch = await bcrypt.compare(candidatePassword, this.password);
-    console.log('Risultato confronto password:', isMatch);
-    return isMatch;
+    return await bcrypt.compare(candidatePassword, this.password);
   } catch (error) {
     console.error('Errore durante il confronto delle password:', error);
     throw error;
@@ -72,7 +65,6 @@ utenteSchema.index({ email: 1 }, { unique: true });
 
 const Utente = mongoose.model("Utente", utenteSchema);
 
-// Gestione degli errori duplicati
 Utente.on('index', function (error) {
   if (error) {
     console.error('Errore di indicizzazione del modello Utente:', error);
