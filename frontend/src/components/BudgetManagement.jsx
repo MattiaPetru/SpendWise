@@ -9,7 +9,10 @@ const BudgetManagement = () => {
   const [newBudget, setNewBudget] = useState({ categoria: '', importo: '', periodo: 'mensile' });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [totalSpent, setTotalSpent] = useState(0);
   const { utente } = useAuth();
+
+  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
 
   const categoriePredefinite = [
     'Cibo', 'Trasporti', 'Svago', 'Hobby', 'Spesa casa', 'Affitto', 'Spese ricorrenti', 'Altro'
@@ -24,7 +27,6 @@ const BudgetManagement = () => {
 
   const fetchIncome = async () => {
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
       const response = await fetch(`${apiUrl}/api/budgets/income`, {
         headers: {
           'Authorization': `Bearer ${utente.token}`
@@ -43,7 +45,6 @@ const BudgetManagement = () => {
 
   const fetchBudgets = async () => {
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
       const response = await fetch(`${apiUrl}/api/budgets`, {
         headers: {
           'Authorization': `Bearer ${utente.token}`
@@ -54,9 +55,38 @@ const BudgetManagement = () => {
       }
       const data = await response.json();
       setBudgets(data);
+      calculateTotalSpent(data);
     } catch (error) {
       console.error('Errore nel caricamento dei budget:', error);
       setError('Si è verificato un errore nel caricamento dei budget. Riprova più tardi.');
+    }
+  };
+
+  const calculateTotalSpent = (budgetsData) => {
+    const total = budgetsData.reduce((acc, budget) => acc + (budget.speso || 0), 0);
+    setTotalSpent(total);
+  };
+
+  const createBudget = async (budgetData) => {
+    try {
+      const response = await fetch(`${apiUrl}/api/budgets`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${utente.token}`
+        },
+        body: JSON.stringify(budgetData)
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.messaggio || 'Errore nella creazione del budget');
+      }
+      const data = await response.json();
+      setSuccess('Budget creato con successo!');
+      fetchBudgets();
+    } catch (error) {
+      console.error('Errore nella creazione del budget:', error);
+      setError(error.message || 'Si è verificato un errore nella creazione del budget. Riprova più tardi.');
     }
   };
 
@@ -66,13 +96,12 @@ const BudgetManagement = () => {
   };
 
   const handleIncomeChange = (e) => {
-    setIncome(e.target.value);
+    setIncome(Number(e.target.value));
   };
 
   const handleIncomeSubmit = async (e) => {
     e.preventDefault();
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
       const response = await fetch(`${apiUrl}/api/budgets/income`, {
         method: 'POST',
         headers: {
@@ -85,6 +114,7 @@ const BudgetManagement = () => {
         throw new Error('Errore nell\'aggiornamento dell\'entrata');
       }
       setSuccess('Entrata mensile aggiornata con successo!');
+      fetchIncome();
     } catch (error) {
       console.error('Errore nell\'aggiornamento dell\'entrata:', error);
       setError('Si è verificato un errore nell\'aggiornamento dell\'entrata. Riprova più tardi.');
@@ -95,32 +125,12 @@ const BudgetManagement = () => {
     e.preventDefault();
     setError('');
     setSuccess('');
-    try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
-      const response = await fetch(`${apiUrl}/api/budgets`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${utente.token}`
-        },
-        body: JSON.stringify(newBudget)
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.messaggio || 'Errore nella creazione del budget');
-      }
-      setSuccess('Budget creato con successo!');
-      fetchBudgets();
-      setNewBudget({ categoria: '', importo: '', periodo: 'mensile' });
-    } catch (error) {
-      console.error('Errore nella creazione del budget:', error);
-      setError(error.message || 'Si è verificato un errore nella creazione del budget. Riprova più tardi.');
-    }
+    await createBudget(newBudget);
+    setNewBudget({ categoria: '', importo: '', periodo: 'mensile' });
   };
 
   const handleDelete = async (budgetId) => {
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
       const response = await fetch(`${apiUrl}/api/budgets/${budgetId}`, {
         method: 'DELETE',
         headers: {
@@ -169,6 +179,19 @@ const BudgetManagement = () => {
                   Aggiorna Entrata
                 </Button>
               </Form>
+            </Card.Body>
+          </Card>
+          <Card className="mt-4">
+            <Card.Header>Riepilogo Spese</Card.Header>
+            <Card.Body>
+              <p>Entrata Mensile: €{income.toFixed(2)}</p>
+              <p>Totale Speso: €{totalSpent.toFixed(2)}</p>
+              <p>Rimanente: €{(income - totalSpent).toFixed(2)}</p>
+              <ProgressBar 
+                now={(totalSpent / income) * 100} 
+                label={`${((totalSpent / income) * 100).toFixed(2)}%`}
+                variant={(totalSpent / income) > 1 ? "danger" : "success"}
+              />
             </Card.Body>
           </Card>
         </Col>
