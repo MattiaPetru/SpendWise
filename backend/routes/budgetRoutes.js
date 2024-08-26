@@ -121,5 +121,23 @@ router.post('/income', async (req, res) => {
     res.status(500).json({ messaggio: error.message });
   }
 });
+// PUT /api/budgets/:id
+router.put('/:id', async (req, res) => {
+  try {
+    const { categoria, importo, periodo } = req.body;
+    const budget = await Budget.findOneAndUpdate(
+      { _id: req.params.id, utente: req.user._id },
+      { categoria, importo, periodo },
+      { new: true, runValidators: true }
+    );
+    if (!budget) {
+      return res.status(404).json({ messaggio: 'Budget non trovato' });
+    }
+    res.json(budget);
+  } catch (error) {
+    console.error('Errore nell\'aggiornamento del budget:', error);
+    res.status(500).json({ messaggio: error.message });
+  }
+});
 
 export default router;

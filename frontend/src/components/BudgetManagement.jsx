@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Form, Button, Table, Alert, ProgressBar } from 'react-bootstrap';
-import { FaTrash } from 'react-icons/fa';
+import { Container, Row, Col, Card, Form, Button, Table, Alert, ProgressBar, Modal } from 'react-bootstrap';
+import { FaTrash, FaEdit } from 'react-icons/fa';
 import { useAuth } from '../AuthContext';
 
 const BudgetManagement = () => {
@@ -12,6 +12,9 @@ const BudgetManagement = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [totalSpent, setTotalSpent] = useState(0);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingBudget, setEditingBudget] = useState(null);
+  const [monthlySpending, setMonthlySpending] = useState({});
   const { utente } = useAuth();
 
   const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
@@ -24,45 +27,49 @@ const BudgetManagement = () => {
     if (utente && utente.token) {
       fetchIncomes();
       fetchBudgets();
+      fetchMonthlySpending();
     }
   }, [utente, selectedMonth]);
 
   const fetchIncomes = async () => {
     try {
       const response = await fetch(`${apiUrl}/api/budgets/income`, {
-        headers: {
-          'Authorization': `Bearer ${utente.token}`
-        }
+        headers: { 'Authorization': `Bearer ${utente.token}` }
       });
-      if (!response.ok) {
-        throw new Error('Errore nel caricamento delle entrate');
-      }
+      if (!response.ok) throw new Error('Errore nel caricamento delle entrate');
       const data = await response.json();
       setIncomes(data);
       const currentMonthIncome = data.find(inc => inc.mese === selectedMonth)?.importo || 0;
       setNewIncome(currentMonthIncome);
     } catch (error) {
-      console.error('Errore nel caricamento delle entrate:', error);
-      setError('Si è verificato un errore nel caricamento delle entrate. Riprova più tardi.');
+      setError('Errore nel caricamento delle entrate. Riprova più tardi.');
     }
   };
 
   const fetchBudgets = async () => {
     try {
       const response = await fetch(`${apiUrl}/api/budgets?mese=${selectedMonth}`, {
-        headers: {
-          'Authorization': `Bearer ${utente.token}`
-        }
+        headers: { 'Authorization': `Bearer ${utente.token}` }
       });
-      if (!response.ok) {
-        throw new Error('Errore nel caricamento dei budget');
-      }
+      if (!response.ok) throw new Error('Errore nel caricamento dei budget');
       const data = await response.json();
       setBudgets(data);
       calculateTotalSpent(data);
     } catch (error) {
-      console.error('Errore nel caricamento dei budget:', error);
-      setError('Si è verificato un errore nel caricamento dei budget. Riprova più tardi.');
+      setError('Errore nel caricamento dei budget. Riprova più tardi.');
+    }
+  };
+
+  const fetchMonthlySpending = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/api/spese/monthly-spending`, {
+        headers: { 'Authorization': `Bearer ${utente.token}` }
+      });
+      if (!response.ok) throw new Error('Errore nel caricamento delle spese mensili');
+      const data = await response.json();
+      setMonthlySpending(data);
+    } catch (error) {
+      setError('Errore nel caricamento delle spese mensili. Riprova più tardi.');
     }
   };
 
@@ -71,35 +78,9 @@ const BudgetManagement = () => {
     setTotalSpent(total);
   };
 
-  const createBudget = async (budgetData) => {
-    try {
-      const response = await fetch(`${apiUrl}/api/budgets`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${utente.token}`
-        },
-        body: JSON.stringify({ ...budgetData, mese: selectedMonth })
-      });
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.messaggio || 'Errore nella creazione del budget');
-      }
-      setSuccess('Budget creato con successo!');
-      fetchBudgets();
-    } catch (error) {
-      console.error('Errore nella creazione del budget:', error);
-      setError(error.message || 'Si è verificato un errore nella creazione del budget. Riprova più tardi.');
-    }
-  };
-
-  const handleInputChange = (e) => {
+  const handleInputChange = (e, setFunction) => {
     const { name, value } = e.target;
-    setNewBudget(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleIncomeChange = (e) => {
-    setNewIncome(Number(e.target.value));
+    setFunction(prev => ({ ...prev, [name]: value }));
   };
 
   const handleIncomeSubmit = async (e) => {
@@ -113,41 +94,47 @@ const BudgetManagement = () => {
         },
         body: JSON.stringify({ importo: newIncome, mese: selectedMonth })
       });
-      if (!response.ok) {
-        throw new Error('Errore nell\'aggiornamento dell\'entrata');
-      }
+      if (!response.ok) throw new Error('Errore nell\'aggiornamento dell\'entrata');
       setSuccess('Entrata mensile aggiornata con successo!');
       fetchIncomes();
     } catch (error) {
-      console.error('Errore nell\'aggiornamento dell\'entrata:', error);
-      setError('Si è verificato un errore nell\'aggiornamento dell\'entrata. Riprova più tardi.');
+      setError('Errore nell\'aggiornamento dell\'entrata. Riprova più tardi.');
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleBudgetSubmit = async (e, budget, isNew = true) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
-    await createBudget(newBudget);
-    setNewBudget({ categoria: '', importo: '', periodo: 'mensile' });
+    try {
+      const url = isNew ? `${apiUrl}/api/budgets` : `${apiUrl}/api/budgets/${budget._id}`;
+      const method = isNew ? 'POST' : 'PUT';
+      const response = await fetch(url, {
+        method: method,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${utente.token}`
+        },
+        body: JSON.stringify({ ...budget, mese: selectedMonth })
+      });
+      if (!response.ok) throw new Error(isNew ? 'Errore nella creazione del budget' : 'Errore nell\'aggiornamento del budget');
+      setSuccess(isNew ? 'Budget creato con successo!' : 'Budget aggiornato con successo!');
+      fetchBudgets();
+      if (!isNew) setShowEditModal(false);
+    } catch (error) {
+      setError(`Errore ${isNew ? 'nella creazione' : 'nell\'aggiornamento'} del budget. Riprova più tardi.`);
+    }
   };
 
   const handleDelete = async (budgetId) => {
     try {
       const response = await fetch(`${apiUrl}/api/budgets/${budgetId}`, {
         method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${utente.token}`
-        }
+        headers: { 'Authorization': `Bearer ${utente.token}` }
       });
-      if (!response.ok) {
-        throw new Error('Errore nell\'eliminazione del budget');
-      }
+      if (!response.ok) throw new Error('Errore nell\'eliminazione del budget');
       setSuccess('Budget eliminato con successo!');
       fetchBudgets();
     } catch (error) {
-      console.error('Errore nell\'eliminazione del budget:', error);
-      setError('Si è verificato un errore nell\'eliminazione del budget. Riprova più tardi.');
+      setError('Errore nell\'eliminazione del budget. Riprova più tardi.');
     }
   };
 
@@ -181,15 +168,13 @@ const BudgetManagement = () => {
                   <Form.Control
                     type="number"
                     value={newIncome}
-                    onChange={handleIncomeChange}
+                    onChange={(e) => setNewIncome(Number(e.target.value))}
                     min="0"
                     step="0.01"
                     required
                   />
                 </Form.Group>
-                <Button variant="primary" type="submit">
-                  Aggiorna Entrata
-                </Button>
+                <Button variant="primary" type="submit">Aggiorna Entrata</Button>
               </Form>
             </Card.Body>
           </Card>
@@ -206,18 +191,39 @@ const BudgetManagement = () => {
               />
             </Card.Body>
           </Card>
+          <Card className="mt-4">
+            <Card.Header>Spese Mensili Precedenti</Card.Header>
+            <Card.Body>
+              <Table striped bordered hover>
+                <thead>
+                  <tr>
+                    <th>Mese</th>
+                    <th>Totale Speso</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Object.entries(monthlySpending).map(([month, total]) => (
+                    <tr key={month}>
+                      <td>{month}</td>
+                      <td>€{total.toFixed(2)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </Card.Body>
+          </Card>
         </Col>
         <Col xs={12} lg={6} className="mb-4">
           <Card>
             <Card.Header>Aggiungi Nuovo Budget per {selectedMonth}</Card.Header>
             <Card.Body>
-              <Form onSubmit={handleSubmit}>
+              <Form onSubmit={(e) => handleBudgetSubmit(e, newBudget)}>
                 <Form.Group className="mb-3">
                   <Form.Label>Categoria</Form.Label>
                   <Form.Select
                     name="categoria"
                     value={newBudget.categoria}
-                    onChange={handleInputChange}
+                    onChange={(e) => handleInputChange(e, setNewBudget)}
                     required
                   >
                     <option value="">Seleziona una categoria</option>
@@ -232,7 +238,7 @@ const BudgetManagement = () => {
                     type="number"
                     name="importo"
                     value={newBudget.importo}
-                    onChange={handleInputChange}
+                    onChange={(e) => handleInputChange(e, setNewBudget)}
                     required
                     min="0"
                     step="0.01"
@@ -243,7 +249,7 @@ const BudgetManagement = () => {
                   <Form.Select
                     name="periodo"
                     value={newBudget.periodo}
-                    onChange={handleInputChange}
+                    onChange={(e) => handleInputChange(e, setNewBudget)}
                     required
                   >
                     <option value="mensile">Mensile</option>
@@ -251,9 +257,7 @@ const BudgetManagement = () => {
                     <option value="annuale">Annuale</option>
                   </Form.Select>
                 </Form.Group>
-                <Button variant="primary" type="submit">
-                  Aggiungi Budget
-                </Button>
+                <Button variant="primary" type="submit">Aggiungi Budget</Button>
               </Form>
             </Card.Body>
           </Card>
@@ -291,6 +295,9 @@ const BudgetManagement = () => {
                           />
                         </td>
                         <td>
+                          <Button variant="primary" size="sm" onClick={() => { setEditingBudget(budget); setShowEditModal(true); }} className="me-2">
+                            <FaEdit />
+                          </Button>
                           <Button variant="danger" size="sm" onClick={() => handleDelete(budget._id)}>
                             <FaTrash />
                           </Button>
@@ -304,6 +311,59 @@ const BudgetManagement = () => {
           </Card>
         </Col>
       </Row>
+
+      <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Modifica Budget</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {editingBudget && (
+            <Form onSubmit={(e) => handleBudgetSubmit(e, editingBudget, false)}>
+              <Form.Group className="mb-3">
+                <Form.Label>Categoria</Form.Label>
+                <Form.Select
+                  name="categoria"
+                  value={editingBudget.categoria}
+                  onChange={(e) => handleInputChange(e, setEditingBudget)}
+                  required
+                >
+                  {categoriePredefinite.map((cat, index) => (
+                    <option key={index} value={cat}>{cat}</option>
+                  ))}
+                </Form.Select>
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Importo</Form.Label>
+                <Form.Control
+                  type="number"
+                  name="importo"
+                  value={editingBudget.importo}
+                  onChange={(e) => handleInputChange(e, setEditingBudget)}
+                  required
+                  min="0"
+                  step="0.01"
+                />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Periodo</Form.Label>
+                <Form.Select
+                  name="periodo"
+                  value={editingBudget.periodo}
+                  onChange={(e) => handleInputChange(e, setEditingBudget)}
+                  required
+                >
+                  <option value="mensile">Mensile</option>
+                  <option value="trimestrale">Trimestrale</option>
+                  <option value="annuale">Annuale</option>
+                </Form.Select>
+              </Form.Group>
+              <Button variant="primary" type="submit">
+                Salva Modifiche
+              </Button>
+            </Form>
+          )}
+        </Modal.Body>
+      </Modal>
     </Container>
   );
 };
