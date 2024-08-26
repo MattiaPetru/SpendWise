@@ -64,18 +64,26 @@ mongoose
   .then(() => console.log("MongoDB connesso"))
   .catch((err) => console.error("Errore di connessione MongoDB:", err));
 
+// Importa i modelli
+import "./models/Utente.js";
+import "./models/Spesa.js";
+import "./models/Budget.js";
+import "./models/Income.js";
+
+// Usa le rotte
 app.use("/api/auth", authRoutes);
 app.use("/api/spese", speseRoutes);
 app.use("/api/utenti", utenteRoutes);
 app.use("/api/budgets", budgetRoutes);
 app.use("/api/advice", adviceRoutes);
 
-const PORT = process.env.PORT || 5001;
-
+// Gestione degli errori
 app.use(badRequestHandler);
 app.use(unauthorizedHandler);
 app.use(notFoundHandler);
 app.use(genericErrorHandler);
+
+const PORT = process.env.PORT || 5001;
 
 app.listen(PORT, () => {
   console.log(`Server in esecuzione sulla porta ${PORT}`);

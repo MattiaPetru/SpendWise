@@ -4,7 +4,9 @@ import { FaTrash } from 'react-icons/fa';
 import { useAuth } from '../AuthContext';
 
 const BudgetManagement = () => {
-  const [income, setIncome] = useState(0);
+  const [incomes, setIncomes] = useState([]);
+  const [selectedMonth, setSelectedMonth] = useState(new Date().toISOString().slice(0, 7)); // YYYY-MM
+  const [newIncome, setNewIncome] = useState(0);
   const [budgets, setBudgets] = useState([]);
   const [newBudget, setNewBudget] = useState({ categoria: '', importo: '', periodo: 'mensile' });
   const [error, setError] = useState('');
@@ -20,12 +22,12 @@ const BudgetManagement = () => {
 
   useEffect(() => {
     if (utente && utente.token) {
-      fetchIncome();
+      fetchIncomes();
       fetchBudgets();
     }
-  }, [utente]);
+  }, [utente, selectedMonth]);
 
-  const fetchIncome = async () => {
+  const fetchIncomes = async () => {
     try {
       const response = await fetch(`${apiUrl}/api/budgets/income`, {
         headers: {
@@ -33,19 +35,21 @@ const BudgetManagement = () => {
         }
       });
       if (!response.ok) {
-        throw new Error('Errore nel caricamento dell\'entrata');
+        throw new Error('Errore nel caricamento delle entrate');
       }
       const data = await response.json();
-      setIncome(data.income);
+      setIncomes(data);
+      const currentMonthIncome = data.find(inc => inc.mese === selectedMonth)?.importo || 0;
+      setNewIncome(currentMonthIncome);
     } catch (error) {
-      console.error('Errore nel caricamento dell\'entrata:', error);
-      setError('Si è verificato un errore nel caricamento dell\'entrata. Riprova più tardi.');
+      console.error('Errore nel caricamento delle entrate:', error);
+      setError('Si è verificato un errore nel caricamento delle entrate. Riprova più tardi.');
     }
   };
 
   const fetchBudgets = async () => {
     try {
-      const response = await fetch(`${apiUrl}/api/budgets`, {
+      const response = await fetch(`${apiUrl}/api/budgets?mese=${selectedMonth}`, {
         headers: {
           'Authorization': `Bearer ${utente.token}`
         }
@@ -75,13 +79,12 @@ const BudgetManagement = () => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${utente.token}`
         },
-        body: JSON.stringify(budgetData)
+        body: JSON.stringify({ ...budgetData, mese: selectedMonth })
       });
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.messaggio || 'Errore nella creazione del budget');
       }
-      const data = await response.json();
       setSuccess('Budget creato con successo!');
       fetchBudgets();
     } catch (error) {
@@ -96,7 +99,7 @@ const BudgetManagement = () => {
   };
 
   const handleIncomeChange = (e) => {
-    setIncome(Number(e.target.value));
+    setNewIncome(Number(e.target.value));
   };
 
   const handleIncomeSubmit = async (e) => {
@@ -108,13 +111,13 @@ const BudgetManagement = () => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${utente.token}`
         },
-        body: JSON.stringify({ income })
+        body: JSON.stringify({ importo: newIncome, mese: selectedMonth })
       });
       if (!response.ok) {
         throw new Error('Errore nell\'aggiornamento dell\'entrata');
       }
       setSuccess('Entrata mensile aggiornata con successo!');
-      fetchIncome();
+      fetchIncomes();
     } catch (error) {
       console.error('Errore nell\'aggiornamento dell\'entrata:', error);
       setError('Si è verificato un errore nell\'aggiornamento dell\'entrata. Riprova più tardi.');
@@ -165,10 +168,19 @@ const BudgetManagement = () => {
             <Card.Body>
               <Form onSubmit={handleIncomeSubmit}>
                 <Form.Group className="mb-3">
+                  <Form.Label>Seleziona Mese</Form.Label>
+                  <Form.Control
+                    type="month"
+                    value={selectedMonth}
+                    onChange={(e) => setSelectedMonth(e.target.value)}
+                    required
+                  />
+                </Form.Group>
+                <Form.Group className="mb-3">
                   <Form.Label>Importo Entrata Mensile</Form.Label>
                   <Form.Control
                     type="number"
-                    value={income}
+                    value={newIncome}
                     onChange={handleIncomeChange}
                     min="0"
                     step="0.01"
@@ -182,22 +194,22 @@ const BudgetManagement = () => {
             </Card.Body>
           </Card>
           <Card className="mt-4">
-            <Card.Header>Riepilogo Spese</Card.Header>
+            <Card.Header>Riepilogo Spese per {selectedMonth}</Card.Header>
             <Card.Body>
-              <p>Entrata Mensile: €{income.toFixed(2)}</p>
+              <p>Entrata Mensile: €{newIncome.toFixed(2)}</p>
               <p>Totale Speso: €{totalSpent.toFixed(2)}</p>
-              <p>Rimanente: €{(income - totalSpent).toFixed(2)}</p>
+              <p>Rimanente: €{(newIncome - totalSpent).toFixed(2)}</p>
               <ProgressBar 
-                now={(totalSpent / income) * 100} 
-                label={`${((totalSpent / income) * 100).toFixed(2)}%`}
-                variant={(totalSpent / income) > 1 ? "danger" : "success"}
+                now={(totalSpent / newIncome) * 100} 
+                label={`${((totalSpent / newIncome) * 100).toFixed(2)}%`}
+                variant={(totalSpent / newIncome) > 1 ? "danger" : "success"}
               />
             </Card.Body>
           </Card>
         </Col>
         <Col xs={12} lg={6} className="mb-4">
           <Card>
-            <Card.Header>Aggiungi Nuovo Budget</Card.Header>
+            <Card.Header>Aggiungi Nuovo Budget per {selectedMonth}</Card.Header>
             <Card.Body>
               <Form onSubmit={handleSubmit}>
                 <Form.Group className="mb-3">
@@ -250,7 +262,7 @@ const BudgetManagement = () => {
       <Row>
         <Col xs={12}>
           <Card>
-            <Card.Header>Budget Attuali</Card.Header>
+            <Card.Header>Budget per {selectedMonth}</Card.Header>
             <Card.Body>
               <div className="table-responsive">
                 <Table striped bordered hover>
