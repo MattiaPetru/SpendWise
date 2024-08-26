@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Container, Row, Col, Card, Form, Button, Table, Alert, ProgressBar, Modal } from 'react-bootstrap';
 import { FaTrash, FaEdit } from 'react-icons/fa';
 import { useAuth } from '../AuthContext';
-import BudgetPieChart from './BudgetPieChart';
 
 const BudgetManagement = () => {
   const [incomes, setIncomes] = useState([]);
@@ -271,12 +270,6 @@ const BudgetManagement = () => {
               </Form>
             </Card.Body>
           </Card>
-          <Card className="mt-4">
-            <Card.Header>Distribuzione dei Budget</Card.Header>
-            <Card.Body>
-              <BudgetPieChart budgets={budgets} />
-            </Card.Body>
-          </Card>
         </Col>
       </Row>
       <Row>
@@ -304,7 +297,7 @@ const BudgetManagement = () => {
                         <td>{budget.periodo}</td>
                         <td>€{budget.speso ? budget.speso.toFixed(2) : '0.00'}</td>
                         <td>
-                        <ProgressBar 
+                          <ProgressBar 
                             now={calculateProgress(budget)} 
                             label={`${calculateProgress(budget).toFixed(2)}%`}
                             variant={calculateProgress(budget) > 100 ? "danger" : "primary"}
