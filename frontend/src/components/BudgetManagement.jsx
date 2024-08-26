@@ -8,7 +8,7 @@ const BudgetManagement = () => {
   const [selectedMonth, setSelectedMonth] = useState(new Date().toISOString().slice(0, 7));
   const [newIncome, setNewIncome] = useState(0);
   const [budgets, setBudgets] = useState([]);
-  const [newBudget, setNewBudget] = useState({ categoria: '', importo: '', periodo: 'mensile' });
+  const [newBudget, setNewBudget] = useState({ categoria: '', importo: '', periodo: 'mensile', mese: selectedMonth });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [totalSpent, setTotalSpent] = useState(0);
@@ -39,13 +39,13 @@ const BudgetManagement = () => {
 
   const fetchBudgets = useCallback(async () => {
     try {
-      const response = await fetch(`${apiUrl}/api/budgets?mese=${selectedMonth}`, {
+      const response = await fetch(`${apiUrl}/api/budgets`, {
         headers: { 'Authorization': `Bearer ${utente.token}` }
       });
       if (!response.ok) throw new Error('Errore nel caricamento dei budget');
       const data = await response.json();
       setBudgets(data);
-      calculateTotalSpent(data);
+      calculateTotalSpent(data.filter(budget => budget.mese === selectedMonth));
     } catch (error) {
       setError('Errore nel caricamento dei budget: ' + error.message);
     }
@@ -98,7 +98,7 @@ const BudgetManagement = () => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${utente.token}`
         },
-        body: JSON.stringify({ ...budget, mese: selectedMonth })
+        body: JSON.stringify(budget)
       });
       if (!response.ok) throw new Error(isNew ? 'Errore nella creazione del budget' : 'Errore nell\'aggiornamento del budget');
       setSuccess(isNew ? 'Budget creato con successo!' : 'Budget aggiornato con successo!');
@@ -147,7 +147,6 @@ const BudgetManagement = () => {
                     onChange={(e) => {
                       setSelectedMonth(e.target.value);
                       fetchIncomes();
-                      fetchBudgets();
                     }}
                     required
                   />
@@ -168,7 +167,7 @@ const BudgetManagement = () => {
             </Card.Body>
           </Card>
           <Card className="mt-4">
-            <Card.Header>Riepilogo Spese</Card.Header>
+            <Card.Header>Riepilogo Spese per {new Date(selectedMonth).toLocaleString('it-IT', { month: 'long', year: 'numeric' })}</Card.Header>
             <Card.Body>
               <p>Entrata Mensile: €{newIncome.toFixed(2)}</p>
               <p>Totale Speso: €{totalSpent.toFixed(2)}</p>
@@ -183,9 +182,19 @@ const BudgetManagement = () => {
         </Col>
         <Col xs={12} lg={6} className="mb-4">
           <Card>
-            <Card.Header>Aggiungi Nuovo Budget per {new Date(selectedMonth).toLocaleString('it-IT', { month: 'long', year: 'numeric' })}</Card.Header>
+            <Card.Header>Aggiungi Nuovo Budget</Card.Header>
             <Card.Body>
               <Form onSubmit={(e) => handleBudgetSubmit(e, newBudget)}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Mese di Riferimento</Form.Label>
+                  <Form.Control
+                    type="month"
+                    name="mese"
+                    value={newBudget.mese}
+                    onChange={(e) => handleInputChange(e, setNewBudget)}
+                    required
+                  />
+                </Form.Group>
                 <Form.Group className="mb-3">
                   <Form.Label>Categoria</Form.Label>
                   <Form.Select
@@ -286,7 +295,7 @@ const BudgetManagement = () => {
           </Card>
         </Col>
       </Row>
-  
+
       <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Modifica Budget</Modal.Title>
@@ -294,6 +303,16 @@ const BudgetManagement = () => {
         <Modal.Body>
           {editingBudget && (
             <Form onSubmit={(e) => handleBudgetSubmit(e, editingBudget, false)}>
+              <Form.Group className="mb-3">
+                <Form.Label>Mese di Riferimento</Form.Label>
+                <Form.Control
+                  type="month"
+                  name="mese"
+                  value={editingBudget.mese}
+                  onChange={(e) => handleInputChange(e, setEditingBudget)}
+                  required
+                />
+              </Form.Group>
               <Form.Group className="mb-3">
                 <Form.Label>Categoria</Form.Label>
                 <Form.Select
@@ -308,7 +327,7 @@ const BudgetManagement = () => {
                 </Form.Select>
               </Form.Group>
               <Form.Group className="mb-3">
-                <Form.Label>Importo</Form.Label>
+              <Form.Label>Importo</Form.Label>
                 <Form.Control
                   type="number"
                   name="importo"
