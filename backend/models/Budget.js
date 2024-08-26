@@ -15,6 +15,11 @@ const budgetSchema = new mongoose.Schema({
     required: [true, 'L\'importo è obbligatorio'],
     min: [0, 'L\'importo non può essere negativo']
   },
+  periodo: {
+    type: String,
+    enum: ['mensile', 'trimestrale', 'annuale'],
+    default: 'mensile'
+  },
   dataInizio: {
     type: Date,
     default: Date.now
@@ -23,7 +28,14 @@ const budgetSchema = new mongoose.Schema({
     type: Date,
     default: function () {
       let date = new Date();
-      return new Date(date.getFullYear(), date.getMonth() + 1, 0); // Ultimo giorno del mese corrente
+      switch (this.periodo) {
+        case 'trimestrale':
+          return new Date(date.getFullYear(), date.getMonth() + 3, 0);
+        case 'annuale':
+          return new Date(date.getFullYear() + 1, date.getMonth(), 0);
+        default: // mensile
+          return new Date(date.getFullYear(), date.getMonth() + 1, 0);
+      }
     }
   }
 }, {

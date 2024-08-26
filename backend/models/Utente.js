@@ -30,11 +30,14 @@ const utenteSchema = new mongoose.Schema({
   googleId: {
     type: String
   },
+  income: {
+    type: Number,
+    default: 0
+  }
 }, {
   timestamps: true,
   collection: "utenti"
 });
-
 
 // Metodo pre-save per hashare la password
 utenteSchema.pre('save', async function (next) {

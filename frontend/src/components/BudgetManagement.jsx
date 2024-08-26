@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Form, Button, Table, Alert, ProgressBar, Spinner } from 'react-bootstrap';
-import { FaTrash } from 'react-icons/fa';
+import { Container, Row, Col, Card, Form, Button, Table, Alert, ProgressBar } from 'react-bootstrap';
+import { FaTrash, FaEdit } from 'react-icons/fa';
 import { useAuth } from '../AuthContext';
 
 const BudgetManagement = () => {
+  const [income, setIncome] = useState(0);
   const [budgets, setBudgets] = useState([]);
-  const [newBudget, setNewBudget] = useState({ categoria: '', importo: '' });
+  const [newBudget, setNewBudget] = useState({ categoria: '', importo: '', periodo: 'mensile' });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [loading, setLoading] = useState(true);
   const { utente } = useAuth();
 
   const categoriePredefinite = [
@@ -17,13 +17,32 @@ const BudgetManagement = () => {
 
   useEffect(() => {
     if (utente && utente.token) {
+      fetchIncome();
       fetchBudgets();
     }
   }, [utente]);
 
+  const fetchIncome = async () => {
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+      const response = await fetch(`${apiUrl}/api/income`, {
+        headers: {
+          'Authorization': `Bearer ${utente.token}`
+        }
+      });
+      if (!response.ok) {
+        throw new Error('Errore nel caricamento dell\'entrata');
+      }
+      const data = await response.json();
+      setIncome(data.income);
+    } catch (error) {
+      console.error('Errore nel caricamento dell\'entrata:', error);
+      setError('Si è verificato un errore nel caricamento dell\'entrata. Riprova più tardi.');
+    }
+  };
+
   const fetchBudgets = async () => {
     try {
-      setLoading(true);
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
       const response = await fetch(`${apiUrl}/api/budgets`, {
         headers: {
@@ -38,14 +57,31 @@ const BudgetManagement = () => {
     } catch (error) {
       console.error('Errore nel caricamento dei budget:', error);
       setError('Si è verificato un errore nel caricamento dei budget. Riprova più tardi.');
-    } finally {
-      setLoading(false);
     }
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewBudget(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleIncomeChange = async (e) => {
+    const newIncome = e.target.value;
+    setIncome(newIncome);
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+      await fetch(`${apiUrl}/api/income`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${utente.token}`
+        },
+        body: JSON.stringify({ income: newIncome })
+      });
+    } catch (error) {
+      console.error('Errore nell\'aggiornamento dell\'entrata:', error);
+      setError('Si è verificato un errore nell\'aggiornamento dell\'entrata. Riprova più tardi.');
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -68,7 +104,7 @@ const BudgetManagement = () => {
       }
       setSuccess('Budget creato con successo!');
       fetchBudgets();
-      setNewBudget({ categoria: '', importo: '' });
+      setNewBudget({ categoria: '', importo: '', periodo: 'mensile' });
     } catch (error) {
       console.error('Errore nella creazione del budget:', error);
       setError(error.message || 'Si è verificato un errore nella creazione del budget. Riprova più tardi.');
@@ -95,15 +131,10 @@ const BudgetManagement = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <Container className="d-flex justify-content-center align-items-center" style={{height: '300px'}}>
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden">Caricamento...</span>
-        </Spinner>
-      </Container>
-    );
-  }
+  const calculateProgress = (budget) => {
+    const spentPercentage = (budget.speso / budget.importo) * 100;
+    return Math.min(spentPercentage, 100);
+  };
 
   return (
     <Container fluid>
@@ -111,6 +142,23 @@ const BudgetManagement = () => {
       {error && <Alert variant="danger">{error}</Alert>}
       {success && <Alert variant="success">{success}</Alert>}
       <Row>
+        <Col xs={12} lg={6} className="mb-4">
+          <Card>
+            <Card.Header>Entrata Mensile</Card.Header>
+            <Card.Body>
+              <Form.Group>
+                <Form.Label>Importo Entrata Mensile</Form.Label>
+                <Form.Control
+                  type="number"
+                  value={income}
+                  onChange={handleIncomeChange}
+                  min="0"
+                  step="0.01"
+                />
+              </Form.Group>
+            </Card.Body>
+          </Card>
+        </Col>
         <Col xs={12} lg={6} className="mb-4">
           <Card>
             <Card.Header>Aggiungi Nuovo Budget</Card.Header>
@@ -142,6 +190,19 @@ const BudgetManagement = () => {
                     step="0.01"
                   />
                 </Form.Group>
+                <Form.Group className="mb-3">
+                  <Form.Label>Periodo</Form.Label>
+                  <Form.Select
+                    name="periodo"
+                    value={newBudget.periodo}
+                    onChange={handleInputChange}
+                    required
+                  >
+                    <option value="mensile">Mensile</option>
+                    <option value="trimestrale">Trimestrale</option>
+                    <option value="annuale">Annuale</option>
+                  </Form.Select>
+                </Form.Group>
                 <Button variant="primary" type="submit">
                   Aggiungi Budget
                 </Button>
@@ -149,7 +210,9 @@ const BudgetManagement = () => {
             </Card.Body>
           </Card>
         </Col>
-        <Col xs={12} lg={6}>
+      </Row>
+      <Row>
+        <Col xs={12}>
           <Card>
             <Card.Header>Budget Attuali</Card.Header>
             <Card.Body>
@@ -159,6 +222,7 @@ const BudgetManagement = () => {
                     <tr>
                       <th>Categoria</th>
                       <th>Budget</th>
+                      <th>Periodo</th>
                       <th>Speso</th>
                       <th>Progresso</th>
                       <th>Azioni</th>
@@ -169,12 +233,13 @@ const BudgetManagement = () => {
                       <tr key={budget._id}>
                         <td>{budget.categoria}</td>
                         <td>€{budget.importo.toFixed(2)}</td>
+                        <td>{budget.periodo}</td>
                         <td>€{budget.speso ? budget.speso.toFixed(2) : '0.00'}</td>
                         <td>
                           <ProgressBar 
-                            now={budget.speso ? (budget.speso / budget.importo) * 100 : 0} 
-                            label={`${budget.speso ? ((budget.speso / budget.importo) * 100).toFixed(2) : 0}%`}
-                            variant={budget.speso > budget.importo ? "danger" : "primary"}
+                            now={calculateProgress(budget)} 
+                            label={`${calculateProgress(budget).toFixed(2)}%`}
+                            variant={calculateProgress(budget) > 100 ? "danger" : "primary"}
                           />
                         </td>
                         <td>
