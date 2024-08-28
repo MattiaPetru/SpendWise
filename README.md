@@ -101,9 +101,9 @@ Per informazioni sulle opzioni di licenza per il software open source, si può c
 
 ## Contatti
 
-Nome del Creatore - [tua@email.com](mailto:mattiapetru93@gmail.com)
+Nome del Creatore - [mattiapetru93@gmail.com]
 
-Link del Progetto: [https://github.com/tuousername/spendwise](https://github.com/MattiaPetru/SpendWise)
+Link del Progetto: [https://github.com/MattiaPetru/SpendWise]
 
 ## Ringraziamenti
 
