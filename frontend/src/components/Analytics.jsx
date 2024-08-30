@@ -3,6 +3,7 @@ import { Container, Row, Col, Card, Form, Alert } from 'react-bootstrap';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { useAuth } from '../AuthContext';
 
+// Definizione dei colori per le diverse categorie di spesa
 const COLORS = {
   'Cibo': '#FF6384',
   'Trasporti': '#36A2EB',
@@ -15,6 +16,7 @@ const COLORS = {
 };
 
 const Analytics = () => {
+  // Stati per gestire il tipo di grafico, i dati e gli errori
   const [chartType, setChartType] = useState('mensile');
   const [chartData, setChartData] = useState([]);
   const [error, setError] = useState('');
@@ -32,6 +34,7 @@ const Analytics = () => {
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
       let endpoint;
       
+      // Selezione dell'endpoint in base al tipo di grafico
       switch(chartType) {
         case 'mensile':
           endpoint = '/api/spese/mensili-dettagliate';
@@ -73,13 +76,19 @@ const Analytics = () => {
     }
   };
 
+   // Funzione per renderizzare il grafico a barre
   const renderBarChart = () => (
+    // ResponsiveContainer assicura che il grafico si adatti alla dimensione del contenitore
     <ResponsiveContainer width="100%" height={300}>
+       {/* BarChart è il componente principale che renderizza il grafico a barre */}
       <BarChart data={chartData}>
+        {/* CartesianGrid aggiunge una griglia di sfondo al grafico */}
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="_id" label={{ value: getXAxisLabel(), position: 'insideBottom', offset: -5 }} />
+        <XAxis dataKey="_id" label={{ value: getXAxisLabel(), position: 'insideBottom', offset: -5 }} /> 
         <YAxis label={{ value: 'Importo (€)', angle: -90, position: 'insideLeft' }} />
+        {/* Tooltip mostra informazioni al passaggio del mouse sulle barre */}
         <Tooltip formatter={(value) => `€${value.toFixed(2)}`} />
+          {/* Legend aggiunge una legenda al grafico */}
         <Legend />
         {Object.keys(chartData[0] || {}).filter(key => key !== '_id').map((key) => (
           <Bar key={key} dataKey={key} fill={COLORS[key] || COLORS['Altro']} />
@@ -88,6 +97,7 @@ const Analytics = () => {
     </ResponsiveContainer>
   );
 
+   // Funzione per renderizzare il grafico a torta
   const renderPieChart = () => {
     const pieData = chartData.reduce((acc, item) => {
       Object.entries(item).forEach(([key, value]) => {

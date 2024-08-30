@@ -22,6 +22,8 @@ const BudgetManagement = () => {
     'Cibo', 'Trasporti', 'Svago', 'Hobby', 'Spesa casa', 'Affitto', 'Spese ricorrenti', 'Altro'
   ];
 
+  
+  // Funzione per recuperare le entrate mensili
   const fetchIncomes = useCallback(async () => {
     try {
       const response = await fetch(`${apiUrl}/api/budgets/income`, {
@@ -37,6 +39,7 @@ const BudgetManagement = () => {
     }
   }, [apiUrl, utente.token, selectedMonth]);
 
+   // Funzione per recuperare i budget
   const fetchBudgets = useCallback(async () => {
     try {
       const response = await fetch(`${apiUrl}/api/budgets`, {
@@ -70,11 +73,13 @@ const BudgetManagement = () => {
     setTotalSpent(total);
   };
 
+  // Gestisce i cambiamenti negli input dei form
   const handleInputChange = (e, setFunction) => {
     const { name, value } = e.target;
     setFunction(prev => ({ ...prev, [name]: value }));
   };
 
+  // Gestisce l'invio del form per l'aggiornamento dell'entrata mensile
   const handleIncomeSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -130,6 +135,7 @@ const BudgetManagement = () => {
     }
   };
 
+  // Calcola la percentuale di progresso per un budget
   const calculateProgress = (budget) => {
     const spentPercentage = (budget.speso / budget.importo) * 100;
     return spentPercentage;
