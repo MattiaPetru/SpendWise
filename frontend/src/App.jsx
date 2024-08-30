@@ -5,7 +5,6 @@ import NavbarComponent from './components/NavbarComponent';
 import HomePage from './components/HomePage';
 import LoginPage from './components/LoginPage';
 import RegisterPage from './components/RegisterPage';
-import ForgotPasswordPage from './components/ForgotPasswordPage';
 import DashboardLayout from './components/DashboardLayout';
 import DashboardHome from './components/DashboardHome'; 
 import AddExpense from './components/AddExpense';
@@ -29,7 +28,7 @@ const App = () => {
             <PrivateRoute>
               <DashboardLayout>
                 <Routes>
-                  <Route index element={<DashboardHome />} /> {/* Modificato qui */}
+                  <Route index element={<DashboardHome />} /> 
                   <Route path="add-expense" element={<AddExpense />} />
                   <Route path="expenses" element={<ViewExpenses />} />
                   <Route path="analytics" element={<Analytics />} />

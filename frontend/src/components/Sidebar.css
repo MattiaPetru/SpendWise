@@ -115,7 +115,7 @@
   pointer-events: auto;
 }
 
-/* Assicurati che la sidebar sia sempre visibile durante il tour */
+/* la sidebar è sempre visibile durante il tour */
 .joyride-tour-active .sidebar {
   visibility: visible !important;
   opacity: 1 !important;

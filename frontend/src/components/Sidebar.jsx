@@ -42,7 +42,7 @@ const Sidebar = () => {
     };
 
     window.addEventListener('resize', handleResize);
-    handleResize(); // Call once to set initial state
+    handleResize();
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
